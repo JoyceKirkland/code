@@ -1,0 +1,2 @@
+/usr/bin/ar qc libcapture.a  CMakeFiles/capture.dir/mv_video_capture.cpp.o
+/usr/bin/ranlib libcapture.a

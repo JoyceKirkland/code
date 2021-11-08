@@ -1,0 +1,134 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1,
+						2,
+						3
+					],
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.15"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						2
+					]
+				},
+				{
+					"build" : "angle_solve",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.15"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "angle_solve",
+					"targetIndexes" : 
+					[
+						0
+					]
+				},
+				{
+					"build" : "camera",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.15"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "camera",
+					"targetIndexes" : 
+					[
+						1
+					]
+				},
+				{
+					"build" : "serial",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.15"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "serial",
+					"targetIndexes" : 
+					[
+						3
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					],
+					"name" : "opencv_test",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 1,
+					"id" : "basic_pnp::@2dffc6ee68763ec85955",
+					"jsonFile" : "target-basic_pnp-Debug-6c734173bcf865ee9dfc.json",
+					"name" : "basic_pnp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "capture::@f1ff328599b7b689f34c",
+					"jsonFile" : "target-capture-Debug-2124907dadadafd0ce82.json",
+					"name" : "capture",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "opencv_test::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-opencv_test-Debug-71035a9ab0f4dac1d947.json",
+					"name" : "opencv_test",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "serial::@f50a2cc8b0e9321cdd57",
+					"jsonFile" : "target-serial-Debug-d9a334e595345a4c8a68.json",
+					"name" : "serial",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/joyce/workplace/rm/2022/KCf/build",
+		"source" : "/home/joyce/workplace/rm/2022/KCf"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 0
+	}
+}

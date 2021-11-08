@@ -1,0 +1,37 @@
+[
+{
+  "directory": "/home/joyce/workplace/rm/2022/KCf/build",
+  "command": "/bin/x86_64-linux-gnu-g++-9  -DFMT_LOCALE -I/usr/include/eigen3 -I/home/joyce/downloads/TensorRT-8.2.0.6/include -I/home/joyce/downloads/TensorRT-8.2.0.6/samples/common -I/usr/local/cuda/include -I/usr/include/opencv4/opencv2 -I../basic_pnp -I../capture -I../serial -isystem /usr/local/include/opencv4  -Wall -Wextra -Wno-deprecated -g   -std=gnu++17 -o CMakeFiles/opencv_test.dir/TRTModule.cpp.o -c /home/joyce/workplace/rm/2022/KCf/TRTModule.cpp",
+  "file": "/home/joyce/workplace/rm/2022/KCf/TRTModule.cpp"
+},
+
+{
+  "directory": "/home/joyce/workplace/rm/2022/KCf/build",
+  "command": "/bin/x86_64-linux-gnu-g++-9  -DFMT_LOCALE -I/usr/include/eigen3 -I/home/joyce/downloads/TensorRT-8.2.0.6/include -I/home/joyce/downloads/TensorRT-8.2.0.6/samples/common -I/usr/local/cuda/include -I/usr/include/opencv4/opencv2 -I../basic_pnp -I../capture -I../serial -isystem /usr/local/include/opencv4  -Wall -Wextra -Wno-deprecated -g   -std=gnu++17 -o CMakeFiles/opencv_test.dir/kcf.cpp.o -c /home/joyce/workplace/rm/2022/KCf/kcf.cpp",
+  "file": "/home/joyce/workplace/rm/2022/KCf/kcf.cpp"
+},
+
+{
+  "directory": "/home/joyce/workplace/rm/2022/KCf/build",
+  "command": "/bin/x86_64-linux-gnu-g++-9  -DFMT_LOCALE -I/usr/include/eigen3 -I/home/joyce/downloads/TensorRT-8.2.0.6/include -I/home/joyce/downloads/TensorRT-8.2.0.6/samples/common -I/usr/local/cuda/include -I/usr/include/opencv4/opencv2 -I../basic_pnp -I../capture -I../serial -isystem /usr/local/include/opencv4  -Wall -Wextra -Wno-deprecated -g   -std=gnu++17 -o CMakeFiles/opencv_test.dir/main.cpp.o -c /home/joyce/workplace/rm/2022/KCf/main.cpp",
+  "file": "/home/joyce/workplace/rm/2022/KCf/main.cpp"
+},
+
+{
+  "directory": "/home/joyce/workplace/rm/2022/KCf/build",
+  "command": "/bin/x86_64-linux-gnu-g++-9   -I/usr/include/eigen3 -I/home/joyce/downloads/TensorRT-8.2.0.6/include -I/home/joyce/downloads/TensorRT-8.2.0.6/samples/common -I/usr/local/cuda/include -I/usr/include/opencv4/opencv2 -I../basic_pnp -isystem /usr/local/include/opencv4  -Wall -Wextra -Wno-deprecated -g   -std=gnu++17 -o angle_solve/CMakeFiles/basic_pnp.dir/basic_pnp.cpp.o -c /home/joyce/workplace/rm/2022/KCf/angle_solve/basic_pnp.cpp",
+  "file": "/home/joyce/workplace/rm/2022/KCf/angle_solve/basic_pnp.cpp"
+},
+
+{
+  "directory": "/home/joyce/workplace/rm/2022/KCf/build",
+  "command": "/bin/x86_64-linux-gnu-g++-9  -DFMT_LOCALE -I/usr/include/eigen3 -I/home/joyce/downloads/TensorRT-8.2.0.6/include -I/home/joyce/downloads/TensorRT-8.2.0.6/samples/common -I/usr/local/cuda/include -I/usr/include/opencv4/opencv2 -I../basic_pnp -I../capture -isystem /usr/local/include/opencv4  -Wall -Wextra -Wno-deprecated -g   -std=gnu++17 -o camera/CMakeFiles/capture.dir/mv_video_capture.cpp.o -c /home/joyce/workplace/rm/2022/KCf/camera/mv_video_capture.cpp",
+  "file": "/home/joyce/workplace/rm/2022/KCf/camera/mv_video_capture.cpp"
+},
+
+{
+  "directory": "/home/joyce/workplace/rm/2022/KCf/build",
+  "command": "/bin/x86_64-linux-gnu-g++-9   -I/usr/include/eigen3 -I/home/joyce/downloads/TensorRT-8.2.0.6/include -I/home/joyce/downloads/TensorRT-8.2.0.6/samples/common -I/usr/local/cuda/include -I/usr/include/opencv4/opencv2 -I../basic_pnp -I../capture -I../serial -isystem /usr/local/include/opencv4  -Wall -Wextra -Wno-deprecated -g   -std=gnu++17 -o serial/CMakeFiles/serial.dir/uart_serial.cpp.o -c /home/joyce/workplace/rm/2022/KCf/serial/uart_serial.cpp",
+  "file": "/home/joyce/workplace/rm/2022/KCf/serial/uart_serial.cpp"
+}
+]

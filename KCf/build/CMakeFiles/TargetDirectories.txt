@@ -1,0 +1,12 @@
+/home/joyce/workplace/rm/2022/KCf/build/CMakeFiles/rebuild_cache.dir
+/home/joyce/workplace/rm/2022/KCf/build/CMakeFiles/edit_cache.dir
+/home/joyce/workplace/rm/2022/KCf/build/CMakeFiles/opencv_test.dir
+/home/joyce/workplace/rm/2022/KCf/build/angle_solve/CMakeFiles/rebuild_cache.dir
+/home/joyce/workplace/rm/2022/KCf/build/angle_solve/CMakeFiles/edit_cache.dir
+/home/joyce/workplace/rm/2022/KCf/build/angle_solve/CMakeFiles/basic_pnp.dir
+/home/joyce/workplace/rm/2022/KCf/build/camera/CMakeFiles/rebuild_cache.dir
+/home/joyce/workplace/rm/2022/KCf/build/camera/CMakeFiles/edit_cache.dir
+/home/joyce/workplace/rm/2022/KCf/build/camera/CMakeFiles/capture.dir
+/home/joyce/workplace/rm/2022/KCf/build/serial/CMakeFiles/rebuild_cache.dir
+/home/joyce/workplace/rm/2022/KCf/build/serial/CMakeFiles/edit_cache.dir
+/home/joyce/workplace/rm/2022/KCf/build/serial/CMakeFiles/serial.dir
