@@ -1,2 +1,0 @@
-/usr/bin/ar qc libbasic_pnp.a  CMakeFiles/basic_pnp.dir/basic_pnp.cpp.o
-/usr/bin/ranlib libbasic_pnp.a
