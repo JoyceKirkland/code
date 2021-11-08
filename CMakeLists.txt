@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.15)
 
 # project name
-PROJECT(radar)
+PROJECT(darts)
 
 # Specialize CMake build flags for different build types
 set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wno-deprecated")
@@ -38,13 +38,13 @@ link_libraries(${OpenCV_LIBS})
 # include_directories(/usr/local/cuda-11.4/lib)
 # include_directories(/usr/include/opencv4/opencv2)
 
-
-aux_source_directory(. ALL_SRCS)			# 添加当前目录下所有的源文件
+# aux_source_directory(. ALL_SRCS)			# 添加当前目录下所有的源文件
+aux_source_directory(/home/joyce/workplace/rm/2022/code/radar/darts ALL_SRCS)			# 添加当前目录下所有的源文件
 # name of executable file and path of source file
-add_executable(radar ${ALL_SRCS})
+add_executable(darts ${ALL_SRCS})
 
 # opencv libraries
-target_link_libraries(radar 
+target_link_libraries(darts 
 	${OpenCV_LIBS}
 	# ${EIGEN3_LIBS}
 	# ${CERES_LIBS}
@@ -58,10 +58,10 @@ target_link_libraries(radar
 # include_directories(basic_pnp)
 # add_subdirectory(angle_solve)
 # target_link_libraries(opencv_test basic_pnp)
-
+# set(camera "/home/joyce/workplace/rm/2022/code/radar/camera")
 include_directories(capture)
-add_subdirectory(camera)
-target_link_libraries(radar capture)
+add_subdirectory(/home/joyce/workplace/rm/2022/code/radar/camera)
+target_link_libraries(darts capture)
 
 # include_directories(serial)
 # add_subdirectory(serial)
