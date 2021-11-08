@@ -1,6 +1,0 @@
-/home/joyce/workplace/rm/2022/radar/build/CMakeFiles/rebuild_cache.dir
-/home/joyce/workplace/rm/2022/radar/build/CMakeFiles/edit_cache.dir
-/home/joyce/workplace/rm/2022/radar/build/CMakeFiles/opencv_test.dir
-/home/joyce/workplace/rm/2022/radar/build/camera/CMakeFiles/rebuild_cache.dir
-/home/joyce/workplace/rm/2022/radar/build/camera/CMakeFiles/edit_cache.dir
-/home/joyce/workplace/rm/2022/radar/build/camera/CMakeFiles/capture.dir
