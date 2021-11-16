@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-11-02 16:33:40
- * @LastEditTime: 2021-11-08 14:20:24
+ * @LastEditTime: 2021-11-08 17:01:06
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /radar/Binocular_camera.cpp
@@ -48,7 +48,8 @@ int main ()
 	//    inRange(hsv,Scalar(0,0,249),Scalar(170,120,255),gray);
 	//    imshow("inrange",hsv);
 	   cvtColor( frame,gray, COLOR_RGB2GRAY );
-	   	   bilateralFilter(gray,mid_filer,10,60,60);
+	   	//    bilateralFilter(gray,mid_filer,10,60,60);
+		GaussianBlur(gray, mid_filer, Size(5, 5), 1, 1);	  
 	   	//    medianBlur(gray,mid_filer,5);     //中值滤波法
 
 	   //-----------------------------------------------------------------------------------

@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.15)
 
 # project name
-PROJECT(radar)
+PROJECT(darts)
 
 # Specialize CMake build flags for different build types
 set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wno-deprecated")
@@ -11,7 +11,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 # Use standard c++17
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_CXX_STANDARD_REQUIRED True)a
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 set(OpenCV "/home/joyce/workplace/opencv4.5/opencv-4.5.0/build")
 # Find and add opencv as required
@@ -41,10 +41,10 @@ link_libraries(${OpenCV_LIBS})
 
 aux_source_directory(. ALL_SRCS)			# 添加当前目录下所有的源文件
 # name of executable file and path of source file
-add_executable(radar ${ALL_SRCS})
+add_executable(darts ${ALL_SRCS})
 
 # opencv libraries
-target_link_libraries(radar 
+target_link_libraries(darts 
 	${OpenCV_LIBS}
 	# ${EIGEN3_LIBS}
 	# ${CERES_LIBS}
@@ -61,7 +61,7 @@ target_link_libraries(radar
 
 include_directories(capture)
 add_subdirectory(camera)
-target_link_libraries(radar capture)
+target_link_libraries(darts capture)
 
 # include_directories(serial)
 # add_subdirectory(serial)
