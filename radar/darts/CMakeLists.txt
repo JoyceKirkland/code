@@ -11,7 +11,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 # Use standard c++17
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED True)a
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 set(OpenCV "/home/joyce/workplace/opencv4.5/opencv-4.5.0/build")
 # Find and add opencv as required

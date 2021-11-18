@@ -11,11 +11,11 @@
 
 namespace mindvision {
 
-VideoCapture::VideoCapture(const CameraParam &_camera_param) {
-  if (_camera_param.camera_mode == 0) {
+VideoCapture::VideoCapture(const CameraParam &_camera_param,int _CAMERA_INDEX) {
+  if (_camera_param.camera_mode == 0||_camera_param.camera_mode == 1) {
     cameraInit(_camera_param.resolution.cols,
                _camera_param.resolution.rows,
-               _camera_param.camera_exposuretime);
+               _camera_param.camera_exposuretime,_CAMERA_INDEX);
 
     iscamera0_open = true;
 
@@ -63,10 +63,15 @@ bool VideoCapture::isindustryimgInput() {
 
 int VideoCapture::cameraInit(const int _CAMERA_RESOLUTION_COLS,
                              const int _CAMERA_RESOLUTION_ROWS,
-                             const int _CAMERA_EXPOSURETIME) {
+                             const int _CAMERA_EXPOSURETIME,
+                             const int _CAMERA_INDEX) {
   CameraSdkInit(1);
 
-  iStatus = CameraEnumerateDevice(&tCameraEnumList, &iCameraCounts);
+  // iStatus = CameraEnumerateDevice(&tCameraEnumList, &iCameraCounts);
+  iStatus = CameraEnumerateDevice(tCameraEnumList, &iCameraCounts);
+
+  // fmt::print("111111tCameraEnumList:{}_1111111111111111111",&tCameraEnumList);
+
 
   if (iCameraCounts == 0) {
     fmt::print("[{}] Error, no mindvision industrial camera detected: {}\n", idntifier_red, iCameraCounts);
@@ -75,16 +80,24 @@ int VideoCapture::cameraInit(const int _CAMERA_RESOLUTION_COLS,
   }
 
   // 相机初始化
-  iStatus = CameraInit(&tCameraEnumList, -1, -1, &hCamera);
+  // iStatus = CameraInit(&tCameraEnumList, -1, -1, &hCamera);
+  if(_CAMERA_INDEX==0)
+  {
+      iStatus = CameraInit(&tCameraEnumList[0], -1, -1, &hCamera);
+  }else
+  {
+      iStatus = CameraInit(&tCameraEnumList[1], -1, -1, &hCamera);
+  }
 
+  // iStatus=0;
   if (iStatus != CAMERA_STATUS_SUCCESS) {
+    
     fmt::print("[{}] Error, Init mindvision industrial camera failed: {}\n", idntifier_red, iStatus);
 
     return -1;
   }
 
   fmt::print("[{}] Info, Init mindvision industrial camera success: {}\n", idntifier_green, iStatus);
-
   CameraGetCapability(hCamera, &tCapability);
 
   g_pRgbBuffer =

@@ -84,8 +84,10 @@ struct CameraParam {
 
 class VideoCapture {
  public:
-  VideoCapture() = default;
-  explicit VideoCapture(const mindvision::CameraParam &_camera_param);
+  // VideoCapture(int _CAMERA_INDEX) = default;
+  // explicit VideoCapture(const mindvision::CameraParam &_camera_param,int _CAMERA_INDEX);
+  VideoCapture(const mindvision::CameraParam &_camera_param,int _CAMERA_INDEX);
+
 
   ~VideoCapture();
   /**
@@ -110,7 +112,8 @@ class VideoCapture {
    */
   int cameraInit(const int _CAMERA_RESOLUTION_COLS,
                  const int _CAMERA_RESOLUTION_ROWS,
-                 const int _CAMERA_EXPOSURETIME);
+                 const int _CAMERA_EXPOSURETIME,
+                 const int _CAMERA_INDEX);
   /**
    * @brief 返回相机读取图片
    * 
@@ -121,13 +124,14 @@ class VideoCapture {
  private:
   unsigned char* g_pRgbBuffer;
 
-  int  iCameraCounts  = 1;
+  int  iCameraCounts  = 2;
   int  iStatus        = -1;
-  int  hCamera;
+  int  hCamera=2;
+  int  hCamera1;
   int  channel        = 3;
   bool iscamera0_open = false;
 
-  tSdkCameraDevInfo   tCameraEnumList;
+  tSdkCameraDevInfo   tCameraEnumList[2];
   tSdkCameraCapbility tCapability;
   tSdkFrameHead       sFrameInfo;
   tSdkImageResolution pImageResolution;

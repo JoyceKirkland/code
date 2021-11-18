@@ -121,7 +121,7 @@ class VideoCapture {
  private:
   unsigned char* g_pRgbBuffer;
 
-  int  iCameraCounts  = 1;
+  int  iCameraCounts  = 2;
   int  iStatus        = -1;
   int  hCamera;
   int  channel        = 3;
