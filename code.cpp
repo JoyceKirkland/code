@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-11-18 11:00:18
- * @LastEditTime: 2021-11-18 21:34:22
+ * @LastEditTime: 2021-11-18 22:22:14
  * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /code/code.cpp
@@ -28,7 +28,7 @@ Mat runCamera(mindvision::VideoCapture* mv_capture_,
             return img;
 	    }else
         {
-            cout<<"img error"<<endl;
+            cout<<"\nimg error\n"<<endl;
             exit(0);
         }
 }

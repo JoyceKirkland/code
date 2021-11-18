@@ -126,8 +126,7 @@ class VideoCapture {
 
   int  iCameraCounts  = 2;
   int  iStatus        = -1;
-  int  hCamera=2;
-  int  hCamera1;
+  int  hCamera        = 2;
   int  channel        = 3;
   bool iscamera0_open = false;
 
