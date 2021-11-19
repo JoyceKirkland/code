@@ -80,7 +80,6 @@ int VideoCapture::cameraInit(const int _CAMERA_RESOLUTION_COLS,
   }
 
   // 相机初始化
-  // iStatus = CameraInit(&tCameraEnumList, -1, -1, &hCamera);
   if(_CAMERA_INDEX==0)
   {
       iStatus = CameraInit(&tCameraEnumList[0], -1, -1, &hCamera);
@@ -89,11 +88,9 @@ int VideoCapture::cameraInit(const int _CAMERA_RESOLUTION_COLS,
       iStatus = CameraInit(&tCameraEnumList[1], -1, -1, &hCamera);
   }
 
-  // iStatus=0;
   if (iStatus != CAMERA_STATUS_SUCCESS) {
     
     fmt::print("[{}] Error, Init mindvision industrial camera failed: {}\n", idntifier_red, iStatus);
-
     return -1;
   }
 

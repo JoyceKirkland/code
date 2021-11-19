@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-11-18 11:00:18
- * @LastEditTime: 2021-11-18 22:22:14
+ * @LastEditTime: 2021-11-19 19:23:31
  * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /code/code.cpp
@@ -43,6 +43,10 @@ int main()
     cv::VideoCapture cap_1 = cv::VideoCapture(1);
     Mat img;
     Mat img1;
+    int change=1;
+    namedWindow("1",WINDOW_NORMAL);
+    setWindowProperty("1", WND_PROP_FULLSCREEN, WINDOW_NORMAL);    
+
     for(;;)
     {
         double time = (double)getTickCount();
@@ -52,12 +56,22 @@ int main()
         time = ((double)getTickCount() - time) / getTickFrequency();
         int fps = 1 / time;
         cout<<"fps:"<<fps<<endl;
-
-		cv::imshow("1", img);
-        cv::imshow("2", img1);
-		if(cv::waitKey(1) == 'q') 
+        int key = waitKey(1);
+        if(char(key) == 27)break;
+        if(change==1)
         {
-            break;
+            cv::imshow("1", img);
+        }else if(change==2)
+        {
+            cv::imshow("1", img1);
+        }
+
+		if(char(key)==49) 
+        {
+            change=1;
+        }else if(char(key)==50)
+        {
+            change=2;
         }
 	    mv_capture_->cameraReleasebuff();
         mv_capture_1->cameraReleasebuff();
