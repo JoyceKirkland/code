@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-11-02 16:33:40
- * @LastEditTime: 2021-11-12 16:50:19
+ * @LastEditTime: 2021-12-01 15:14:58
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /radar/Binocular_camera.cpp
@@ -50,9 +50,10 @@ int main ()
 	//    cvtColor( frame,hsv, COLOR_RGB2HSV );
 	//    inRange(hsv,Scalar(0,0,249),Scalar(170,120,255),gray);
 	//    imshow("inrange",hsv);
-	   cvtColor( frame,gray, COLOR_RGB2GRAY );
+		GaussianBlur(frame, frame, Size(5, 5), 1, 1);	  
+
+	   cvtColor( frame,mid_filer, COLOR_RGB2GRAY );
 	   	//    bilateralFilter(gray,mid_filer,10,60,60);
-		GaussianBlur(gray, mid_filer, Size(5, 5), 1, 1);	  
 	   	//    medianBlur(gray,mid_filer,5);     //中值滤波法
 		//    cout<<count_num<<endl;
 	   	// frame_0=mid_filer.clone();
@@ -64,7 +65,7 @@ int main ()
 	   if(count_num==1)
 	   {
 		   background=mid_filer.clone();
-		   frame_1=mid_filer.clone();
+		//    frame_1=mid_filer.clone();
 		   frame_0=background;
 	   }
 	   else
@@ -103,9 +104,10 @@ int main ()
     {
 		Rect rect = boundingRect(contours[i]);	//找出轮廓最小外界矩形
 			// cout << "矩形框" << rect.width << endl;
-			if(mu[i].m00<2000&&mu[i].m00>125)
+			// if(mu[i].m00<2000&&mu[i].m00>125)
+			if(mu[i].m00<200)
 			{
-				rectangle(frame, rect, Scalar(0, 0, 255), 3);	//在原图像上画出矩形
+				rectangle(frame, rect, Scalar(0, 0, 255), 2);	//在原图像上画出矩形
 			}
 			// if((rect.width > 10) && (rect.width < 400))	//限定矩形框的大小
 				// rectangle(frame, rect, Scalar(0, 0, 255), 3);	//在原图像上画出矩形
@@ -140,7 +142,7 @@ int main ()
 	   frame_0=mid_filer.clone();
 	   imshow("frame_0",frame_0);
 	//    frame_1=foreground.clone();
-	   num--;
+	//    num--;
 	   char c = waitKey(30);
 	   if( c =='q' ) break;
 	   if (num < 1)

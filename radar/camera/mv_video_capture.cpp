@@ -83,10 +83,20 @@ int VideoCapture::cameraInit(const int _CAMERA_RESOLUTION_COLS,
   if(_CAMERA_INDEX==0)
   {
       iStatus = CameraInit(&tCameraEnumList[0], -1, -1, &hCamera);
+      // printf("&tCameraEnumList[0]:%s",tCameraEnumList[0]);
+      // std::cout<<"tCameraEnumList[0]"<<tCameraEnumList[0]<<std::endl;
+
   }else
   {
       iStatus = CameraInit(&tCameraEnumList[1], -1, -1, &hCamera);
+      // std::cout<<"tCameraEnumList[1]"<<tCameraEnumList[1]<<std::endl;
   }
+
+  // for(int i=0;i<2;i++)
+  // {
+  //     std::cout<<"tCameraEnumList["<<i<<"]:"<<&tCameraEnumList[i]<<std::endl;
+
+  // }
 
   if (iStatus != CAMERA_STATUS_SUCCESS) {
     

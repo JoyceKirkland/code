@@ -60,6 +60,8 @@
         "bitset": "cpp",
         "forward_list": "cpp",
         "unordered_set": "cpp",
-        "typeindex": "cpp"
+        "typeindex": "cpp",
+        "__debug": "cpp",
+        "__bit_reference": "cpp"
     }
 }

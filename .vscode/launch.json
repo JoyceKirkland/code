@@ -10,7 +10,7 @@
             "preLaunchTask": "build", /*调试前执行 'build'选项*/
             "type": "cppdbg",
             "request": "launch",
-            "program": "${fileDirname}/${fileBasenameNoExtension}", /*选择要调试的文件路径*/
+            "program": "${fileDirname}/build/code", /*选择要调试的文件路径*/
             //"program": "${workspaceFolder}/bin/run.o", /*选择要调试的文件路径*/
             "args": [],
             "stopAtEntry": false,

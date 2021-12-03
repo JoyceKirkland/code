@@ -39,9 +39,9 @@ link_libraries(${CERES_LIBS})
 include_directories(/usr/include/opencv4/opencv2)
 
 
-aux_source_directory(. ALL_SRCS)			# 添加当前目录下所有的源文件
+# aux_source_directory(. ALL_SRCS)			# 添加当前目录下所有的源文件
 # name of executable file and path of source file
-add_executable(opencv_test ${ALL_SRCS})
+# add_executable(opencv_test ${ALL_SRCS})
 
 # opencv libraries
 target_link_libraries(opencv_test 
@@ -66,3 +66,8 @@ target_link_libraries(opencv_test capture)
 include_directories(serial)
 add_subdirectory(serial)
 target_link_libraries(opencv_test serial)
+
+find_package(OpenCV 4 REQUIRED)
+aux_source_directory(. ALL_SRCS)			# 添加当前目录下所有的源文件
+add_library (kcf ${LIB_SRCS})				# 当前目录下的文件生成一个链接库
+target_link_libraries(kcf ${OpenCV_LIBS})
