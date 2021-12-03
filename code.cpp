@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-11-18 11:00:18
- * @LastEditTime: 2021-12-03 14:42:12
+ * @LastEditTime: 2021-12-03 19:02:59
  * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /code/code.cpp
@@ -429,11 +429,11 @@ int main ()
                                          "/home/joyce/workplace/rm/2022/KCf/configs/angle_solve/basic_pnp_config.xml");
 
     mindvision::VideoCapture* mv_capture_ = new mindvision::VideoCapture(
-    mindvision::CameraParam(0, mindvision::RESOLUTION_1280_X_800, mindvision::EXPOSURE_20000),1);
+    mindvision::CameraParam(0, mindvision::RESOLUTION_1280_X_800, mindvision::EXPOSURE_20000),0);
     cv::VideoCapture cap_ = cv::VideoCapture(0);
 
     mindvision::VideoCapture* mv_capture_1 = new mindvision::VideoCapture(
-    mindvision::CameraParam(0, mindvision::RESOLUTION_1280_X_800, mindvision::EXPOSURE_20000),0);
+    mindvision::CameraParam(0, mindvision::RESOLUTION_1280_X_800, mindvision::EXPOSURE_20000),1);
     cv::VideoCapture cap_1 = cv::VideoCapture(1);
 
     Mat background,foreground,foreground_BW;
@@ -451,8 +451,8 @@ int main ()
     // int fps = 0, fps_count = 0;
     // auto t1 = system_clock::now();
     // int cnt_useless = -1;
-	cv::Mat img;
-    cv::Mat img1;
+	cv::Mat img;//装甲板
+    cv::Mat img1;//飞镖
     cv::Mat darts_roi;
     const cv::Scalar colors[4] = {{255, 0, 0}, {0, 0, 255}, {0, 255, 0}, {255, 255, 255}};
 
