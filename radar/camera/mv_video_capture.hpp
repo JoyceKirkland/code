@@ -132,6 +132,7 @@ class VideoCapture {
   bool iscamera0_open = false;
 
   tSdkCameraDevInfo   tCameraEnumList[2];
+  // tSdkCameraDevInfo   tCameraEnumList;
   tSdkCameraCapbility tCapability;
   tSdkFrameHead       sFrameInfo;
   tSdkImageResolution pImageResolution;

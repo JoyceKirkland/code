@@ -70,33 +70,43 @@ int VideoCapture::cameraInit(const int _CAMERA_RESOLUTION_COLS,
   // iStatus = CameraEnumerateDevice(&tCameraEnumList, &iCameraCounts);
   iStatus = CameraEnumerateDevice(tCameraEnumList, &iCameraCounts);
 
-  // fmt::print("111111tCameraEnumList:{}_1111111111111111111",&tCameraEnumList);
-
+  // fmt::print("111111tCameraEnumList:{}_1111111111111111111",&tCameraEnumList[0]);
 
   if (iCameraCounts == 0) {
     fmt::print("[{}] Error, no mindvision industrial camera detected: {}\n", idntifier_red, iCameraCounts);
 
     return -1;
   }
+  //CameraInitEx
+  // int index_num=CameraEnumerateDeviceEx();
+  // std::cout<<"index_num："<<index_num<<std::endl;
+  // iStatus = CameraInitEx(index_num, -1, -1, &hCamera);
 
   // 相机初始化
   if(_CAMERA_INDEX==0)
   {
-      iStatus = CameraInit(&tCameraEnumList[0], -1, -1, &hCamera);
-      // printf("&tCameraEnumList[0]:%s",tCameraEnumList[0]);
-      // std::cout<<"tCameraEnumList[0]"<<tCameraEnumList[0]<<std::endl;
+      // iStatus = CameraInit(&tCameraEnumList, -1, -1, &hCamera);
+      // iStatus = CameraInit(&tCameraEnumList[0], -1, -1, &hCamera);
+      iStatus = CameraInitEx(0, -1, -1, &hCamera);
+      // iStatus = CameraInitEx2("radar_video_0", &hCamera);
+      // CameraSetFriendlyName(hCamera,"radar_video_0");
 
-  }else
-  {
-      iStatus = CameraInit(&tCameraEnumList[1], -1, -1, &hCamera);
-      // std::cout<<"tCameraEnumList[1]"<<tCameraEnumList[1]<<std::endl;
+      std::cout<<"acFriendlyName[0]:"<<tCameraEnumList[0].acFriendlyName<<std::endl;
+      // std::cout<<"tCameraEnumList[1]："<<&tCameraEnumList[1]<<std::endl;
   }
+  else
+  {
+      // iStatus = CameraInit(&tCameraEnumList, -1, -1, &hCamera);
+      // iStatus = CameraInit(&tCameraEnumList[1], -1, -1, &hCamera);
+      iStatus = CameraInitEx(1, -1, -1, &hCamera);
+      // iStatus = CameraInitEx2("radar_video_1", &hCamera);
+      // CameraSetFriendlyName(hCamera,"radar_video_1");
+      std::cout<<"acFriendlyName[1]:"<<tCameraEnumList[1].acFriendlyName<<std::endl;
 
-  // for(int i=0;i<2;i++)
-  // {
-  //     std::cout<<"tCameraEnumList["<<i<<"]:"<<&tCameraEnumList[i]<<std::endl;
+      // std::cout<<"tCameraEnumList[0]："<<&tCameraEnumList[0]<<std::endl;
+      // std::cout<<"tCameraEnumList[1]："<<&tCameraEnumList[1]<<std::endl;
 
-  // }
+  }
 
   if (iStatus != CAMERA_STATUS_SUCCESS) {
     
