@@ -85,8 +85,8 @@ int VideoCapture::cameraInit(const int _CAMERA_RESOLUTION_COLS,
   // 相机初始化
   if(_CAMERA_INDEX==0)
   {
-      iStatus = CameraInit(tCameraEnumList, -1, -1, &hCamera);//调用单相机时可用
-      // iStatus = CameraInit(&tCameraEnumList[0], -1, -1, &hCamera);
+      // iStatus = CameraInit(tCameraEnumList, -1, -1, &hCamera);//调用单相机时可用
+      iStatus = CameraInit(&tCameraEnumList[0], -1, -1, &hCamera);
       // iStatus = CameraInitEx(0, -1, -1, &hCamera);
       // iStatus = CameraInitEx2("radar_video_0", &hCamera);
       // CameraSetFriendlyName(hCamera,"radar_video_0");
@@ -94,10 +94,10 @@ int VideoCapture::cameraInit(const int _CAMERA_RESOLUTION_COLS,
       // std::cout<<"acFriendlyName[0]:"<<tCameraEnumList[0].acFriendlyName<<std::endl;
       // std::cout<<"tCameraEnumList[1]："<<&tCameraEnumList[1]<<std::endl;
   }
-  // else
+  else
   {
       // iStatus = CameraInit(&tCameraEnumList, -1, -1, &hCamera);
-      // iStatus = CameraInit(&tCameraEnumList[1], -1, -1, &hCamera);
+      iStatus = CameraInit(&tCameraEnumList[1], -1, -1, &hCamera);
       // iStatus = CameraInitEx(1, -1, -1, &hCamera);
       // iStatus = CameraInitEx2("radar_video_1", &hCamera);
       // CameraSetFriendlyName(hCamera,"radar_video_1");

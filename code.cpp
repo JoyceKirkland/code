@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-11-18 11:00:18
- * @LastEditTime: 2021-12-24 16:38:27
+ * @LastEditTime: 2021-12-28 15:41:22
  * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /code/code.cpp
@@ -437,12 +437,12 @@ int main ()
     basic_pnp::PnP pnp_ = basic_pnp::PnP("/home/joyce/workplace/rm/2022/KCf/configs/camera/mv_camera_config_555.xml", 
                                          "/home/joyce/workplace/rm/2022/KCf/configs/angle_solve/basic_pnp_config.xml");
 
-    // mindvision::VideoCapture* mv_capture_ = new mindvision::VideoCapture(
-    // mindvision::CameraParam(0, mindvision::RESOLUTION_1280_X_800, mindvision::EXPOSURE_10000),0);
-    // cv::VideoCapture cap_ = cv::VideoCapture(0);
+    mindvision::VideoCapture* mv_capture_ = new mindvision::VideoCapture(
+    mindvision::CameraParam(0, mindvision::RESOLUTION_1280_X_800, mindvision::EXPOSURE_10000),0);
+    cv::VideoCapture cap_ = cv::VideoCapture(0);
 
     mindvision::VideoCapture* mv_capture_1 = new mindvision::VideoCapture(
-    mindvision::CameraParam(0, mindvision::RESOLUTION_1280_X_800, mindvision::EXPOSURE_10000),0);
+    mindvision::CameraParam(0, mindvision::RESOLUTION_1280_X_800, mindvision::EXPOSURE_10000),1);
     cv::VideoCapture cap_1 = cv::VideoCapture(1);
 
     Mat background,foreground,foreground_BW;
@@ -476,8 +476,8 @@ int main ()
     int compensate_w;
     std::vector<cv::Point2f> target_2d;
     Mat element = getStructuringElement(MORPH_RECT,Size(9,9));
-   	namedWindow("Radar picture",WINDOW_NORMAL);
-    setWindowProperty("Radar picture", WND_PROP_FULLSCREEN, WINDOW_FULLSCREEN);    
+   	// namedWindow("Radar picture",WINDOW_NORMAL);
+    // setWindowProperty("Radar picture", WND_PROP_FULLSCREEN, WINDOW_FULLSCREEN);    
 
 
     while (true) 
@@ -496,59 +496,59 @@ int main ()
         //          foreground_BW, element);
     
         if (
-            // mv_capture_->isindustryimgInput()
-        // &&
+            mv_capture_->isindustryimgInput()
+        &&
         mv_capture_1->isindustryimgInput()
         ) 
         {
-            // img = mv_capture_->image();
+            img = mv_capture_->image();
             img1=mv_capture_1->image();
         } else {
-            // cap_.read(img);
+            cap_.read(img);
             cap_1.read(img1);
         }
         if (!img1.empty()) {
-            // count_num=count_num+1;
+            count_num=count_num+1;
             // cv::imshow("0", img);
-            // darts_roi=img(Rect((img.cols/2)-20,(img.rows/2)-20,140,140));
-	    	// rectangle(img, Rect((img.cols/2)-20,(img.rows/2)-20,140,140), Scalar(255, 255, 0), 2);	//在原图像上画出矩形
-		    // GaussianBlur(darts_roi, darts_roi, Size(5, 5), 1, 1);	
-            // // imshow("darts_roi",darts_roi);  
-	        // cvtColor( darts_roi,mid_filer, COLOR_RGB2GRAY );
+            darts_roi=img(Rect((img.cols/2)-20,(img.rows/2)-20,140,140));
+	    	rectangle(img, Rect((img.cols/2)-20,(img.rows/2)-20,140,140), Scalar(255, 255, 0), 2);	//在原图像上画出矩形
+		    GaussianBlur(darts_roi, darts_roi, Size(5, 5), 1, 1);	
+            // imshow("darts_roi",darts_roi);  
+	        cvtColor( darts_roi,mid_filer, COLOR_RGB2GRAY );
 
-            // if(count_num==1)
-	        // {
-		    //     background=mid_filer.clone();
-		    //     frame_0=background;
-	        // }
-	        // else
-	        // {
-		    //     background=frame_0; 
-	        // }
-	        // absdiff(mid_filer,background,foreground);//用帧差法求前景
-	        // threshold( foreground, foreground_BW, 120, 255 , 0 );//二值化通常设置为50  255
-	   	    // dilate(foreground_BW,foreground_BW,element);
+            if(count_num==1)
+	        {
+		        background=mid_filer.clone();
+		        frame_0=background;
+	        }
+	        else
+	        {
+		        background=frame_0; 
+	        }
+	        absdiff(mid_filer,background,foreground);//用帧差法求前景
+	        threshold( foreground, foreground_BW, 120, 255 , 0 );//二值化通常设置为50  255
+	   	    dilate(foreground_BW,foreground_BW,element);
 
-	        // vector<vector<Point>> contours;
-	        // vector<Vec4i> hierarchy;
-	        // findContours(foreground_BW,contours,hierarchy,RETR_EXTERNAL,CHAIN_APPROX_NONE,Point());//寻找并绘制轮廓
-            // vector<Moments>mu(contours.size());
-            // for(unsigned i=0;i<contours.size();i++)//计算轮廓面积
-            // {
-            //     mu[i]=moments(contours[i],false);
-            // }
-            // for(int i=0;i<contours.size();i++)//最小外接矩形
-            // {
-	    	//     Rect rect = boundingRect(contours[i]);	//找出轮廓最小外界矩形
-	    	// 	// cout << "矩形框" << rect.width << endl;
-	    	// 	// if(mu[i].m00<2000&&mu[i].m00>125)
-	    	// 	if(mu[i].m00<300)
-	    	// 	{
-	    	// 		rectangle(darts_roi, rect, Scalar(0, 255, 0), 3);	//在原图像上画出矩形
-	    	// 	}
-	        // }
-            // frame_0=mid_filer.clone();
-            // imshow("0",img);
+	        vector<vector<Point>> contours;
+	        vector<Vec4i> hierarchy;
+	        findContours(foreground_BW,contours,hierarchy,RETR_EXTERNAL,CHAIN_APPROX_NONE,Point());//寻找并绘制轮廓
+            vector<Moments>mu(contours.size());
+            for(unsigned i=0;i<contours.size();i++)//计算轮廓面积
+            {
+                mu[i]=moments(contours[i],false);
+            }
+            for(int i=0;i<contours.size();i++)//最小外接矩形
+            {
+	    	    Rect rect = boundingRect(contours[i]);	//找出轮廓最小外界矩形
+	    		// cout << "矩形框" << rect.width << endl;
+	    		// if(mu[i].m00<2000&&mu[i].m00>125)
+	    		if(mu[i].m00<300)
+	    		{
+	    			rectangle(darts_roi, rect, Scalar(0, 255, 0), 3);	//在原图像上画出矩形
+	    		}
+	        }
+            frame_0=mid_filer.clone();
+            imshow("0",img);
 
             //--------------------------------------------
             std::array<double, 4> q;
@@ -589,10 +589,10 @@ int main ()
             }
             
             // // fps_count++;
-            // time = ((double)getTickCount() - time) / getTickFrequency();
-            // int fps = 1 / time;
+            time = ((double)getTickCount() - time) / getTickFrequency();
+            int fps = 1 / time;
             // // cv::putText(img1, fmt::format("fps={}", fps), {10, 25}, cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(0, 0, 0));
-            // cout<<"fps:"<<fps<<endl;
+            cout<<"fps:"<<fps<<endl;
             // frame_0=mid_filer.clone();
             cv::imshow("Radar picture", img1);
             if(cv::waitKey(1) == 'q') {
@@ -600,7 +600,7 @@ int main ()
             }
         }
 
-        // mv_capture_->cameraReleasebuff();        
+        mv_capture_->cameraReleasebuff();        
         mv_capture_1->cameraReleasebuff();
 
     }
