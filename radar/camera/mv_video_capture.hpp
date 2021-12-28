@@ -26,6 +26,7 @@ static auto idntifier_red   = fmt::format(fg(fmt::color::red)   | fmt::emphasis:
 enum EXPOSURETIME {
   // 相机曝光时间
   EXPOSURE_20000 = 20000,
+  EXPOSURE_10000 = 10000,
   EXPOSURE_5000 = 5000,
   EXPOSURE_3000 = 3000,
   EXPOSURE_2500 = 2500,

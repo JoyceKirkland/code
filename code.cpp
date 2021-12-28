@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-11-18 11:00:18
- * @LastEditTime: 2021-12-06 21:28:06
+ * @LastEditTime: 2021-12-24 16:38:27
  * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /code/code.cpp
@@ -437,12 +437,12 @@ int main ()
     basic_pnp::PnP pnp_ = basic_pnp::PnP("/home/joyce/workplace/rm/2022/KCf/configs/camera/mv_camera_config_555.xml", 
                                          "/home/joyce/workplace/rm/2022/KCf/configs/angle_solve/basic_pnp_config.xml");
 
-    mindvision::VideoCapture* mv_capture_ = new mindvision::VideoCapture(
-    mindvision::CameraParam(0, mindvision::RESOLUTION_1280_X_800, mindvision::EXPOSURE_20000),0);
-    cv::VideoCapture cap_ = cv::VideoCapture(0);
+    // mindvision::VideoCapture* mv_capture_ = new mindvision::VideoCapture(
+    // mindvision::CameraParam(0, mindvision::RESOLUTION_1280_X_800, mindvision::EXPOSURE_10000),0);
+    // cv::VideoCapture cap_ = cv::VideoCapture(0);
 
     mindvision::VideoCapture* mv_capture_1 = new mindvision::VideoCapture(
-    mindvision::CameraParam(0, mindvision::RESOLUTION_1280_X_800, mindvision::EXPOSURE_20000),1);
+    mindvision::CameraParam(0, mindvision::RESOLUTION_1280_X_800, mindvision::EXPOSURE_10000),0);
     cv::VideoCapture cap_1 = cv::VideoCapture(1);
 
     Mat background,foreground,foreground_BW;
@@ -476,6 +476,9 @@ int main ()
     int compensate_w;
     std::vector<cv::Point2f> target_2d;
     Mat element = getStructuringElement(MORPH_RECT,Size(9,9));
+   	namedWindow("Radar picture",WINDOW_NORMAL);
+    setWindowProperty("Radar picture", WND_PROP_FULLSCREEN, WINDOW_FULLSCREEN);    
+
 
     while (true) 
     {
@@ -492,59 +495,61 @@ int main ()
         //         count_num,mid_filer,background,frame_0,foreground,
         //          foreground_BW, element);
     
-        if (mv_capture_->isindustryimgInput()
-        &&mv_capture_1->isindustryimgInput()) 
+        if (
+            // mv_capture_->isindustryimgInput()
+        // &&
+        mv_capture_1->isindustryimgInput()
+        ) 
         {
-            img = mv_capture_->image();
+            // img = mv_capture_->image();
             img1=mv_capture_1->image();
         } else {
-            cap_.read(img);
+            // cap_.read(img);
             cap_1.read(img1);
         }
-        if (!img.empty()) {
-            count_num=count_num+1;
-                // img1=darts_Door(img1,count_num,
-                // mid_filer,background,frame_0,foreground,
-                //  foreground_BW, element);
-            darts_roi=img(Rect((img.cols/2)-20,(img.rows/2)-20,140,140));
-	    	rectangle(img, Rect((img.cols/2)-20,(img.rows/2)-20,140,140), Scalar(255, 255, 0), 2);	//在原图像上画出矩形
-		    GaussianBlur(darts_roi, darts_roi, Size(5, 5), 1, 1);	
-            // imshow("darts_roi",darts_roi);  
-	        cvtColor( darts_roi,mid_filer, COLOR_RGB2GRAY );
+        if (!img1.empty()) {
+            // count_num=count_num+1;
+            // cv::imshow("0", img);
+            // darts_roi=img(Rect((img.cols/2)-20,(img.rows/2)-20,140,140));
+	    	// rectangle(img, Rect((img.cols/2)-20,(img.rows/2)-20,140,140), Scalar(255, 255, 0), 2);	//在原图像上画出矩形
+		    // GaussianBlur(darts_roi, darts_roi, Size(5, 5), 1, 1);	
+            // // imshow("darts_roi",darts_roi);  
+	        // cvtColor( darts_roi,mid_filer, COLOR_RGB2GRAY );
 
-            if(count_num==1)
-	        {
-		        background=mid_filer.clone();
-		        frame_0=background;
-	        }
-	        else
-	        {
-		        background=frame_0; 
-	        }
-	        absdiff(mid_filer,background,foreground);//用帧差法求前景
-	        threshold( foreground, foreground_BW, 120, 255 , 0 );//二值化通常设置为50  255
-	   	    dilate(foreground_BW,foreground_BW,element);
+            // if(count_num==1)
+	        // {
+		    //     background=mid_filer.clone();
+		    //     frame_0=background;
+	        // }
+	        // else
+	        // {
+		    //     background=frame_0; 
+	        // }
+	        // absdiff(mid_filer,background,foreground);//用帧差法求前景
+	        // threshold( foreground, foreground_BW, 120, 255 , 0 );//二值化通常设置为50  255
+	   	    // dilate(foreground_BW,foreground_BW,element);
 
-	        vector<vector<Point>> contours;
-	        vector<Vec4i> hierarchy;
-	        findContours(foreground_BW,contours,hierarchy,RETR_EXTERNAL,CHAIN_APPROX_NONE,Point());//寻找并绘制轮廓
-            vector<Moments>mu(contours.size());
-            for(unsigned i=0;i<contours.size();i++)//计算轮廓面积
-            {
-                mu[i]=moments(contours[i],false);
-            }
-            for(int i=0;i<contours.size();i++)//最小外接矩形
-            {
-	    	    Rect rect = boundingRect(contours[i]);	//找出轮廓最小外界矩形
-	    		// cout << "矩形框" << rect.width << endl;
-	    		// if(mu[i].m00<2000&&mu[i].m00>125)
-	    		if(mu[i].m00<300)
-	    		{
-	    			rectangle(darts_roi, rect, Scalar(0, 255, 0), 3);	//在原图像上画出矩形
-	    		}
-	        }
-            frame_0=mid_filer.clone();
-            imshow("img1",img);
+	        // vector<vector<Point>> contours;
+	        // vector<Vec4i> hierarchy;
+	        // findContours(foreground_BW,contours,hierarchy,RETR_EXTERNAL,CHAIN_APPROX_NONE,Point());//寻找并绘制轮廓
+            // vector<Moments>mu(contours.size());
+            // for(unsigned i=0;i<contours.size();i++)//计算轮廓面积
+            // {
+            //     mu[i]=moments(contours[i],false);
+            // }
+            // for(int i=0;i<contours.size();i++)//最小外接矩形
+            // {
+	    	//     Rect rect = boundingRect(contours[i]);	//找出轮廓最小外界矩形
+	    	// 	// cout << "矩形框" << rect.width << endl;
+	    	// 	// if(mu[i].m00<2000&&mu[i].m00>125)
+	    	// 	if(mu[i].m00<300)
+	    	// 	{
+	    	// 		rectangle(darts_roi, rect, Scalar(0, 255, 0), 3);	//在原图像上画出矩形
+	    	// 	}
+	        // }
+            // frame_0=mid_filer.clone();
+            // imshow("0",img);
+
             //--------------------------------------------
             std::array<double, 4> q;
             double timestamp = 0.0;
@@ -560,10 +565,10 @@ int main ()
                 cv::Mat im2show = img.clone();
                 // for (const auto &b: detections) {
                 for (int i = 0; i < detections.size(); i++) {
-                    cv::line(img1, detections[i].pts[0], detections[i].pts[1], colors[2], 2);
-                    cv::line(img1, detections[i].pts[1], detections[i].pts[2], colors[2], 2);
-                    cv::line(img1, detections[i].pts[2], detections[i].pts[3], colors[2], 2);
-                    cv::line(img1, detections[i].pts[3], detections[i].pts[0], colors[2], 2);
+                    cv::line(img1, detections[i].pts[0], detections[i].pts[1], colors[1], 6);
+                    cv::line(img1, detections[i].pts[1], detections[i].pts[2], colors[1], 6);
+                    cv::line(img1, detections[i].pts[2], detections[i].pts[3], colors[1], 6);
+                    cv::line(img1, detections[i].pts[3], detections[i].pts[0], colors[1], 6);
                     cv::putText(img, std::to_string(detections[i].tag_id), detections[i].pts[0], cv::FONT_HERSHEY_SIMPLEX, 1, colors[detections[i].color_id]);
                     armor.color_id = detections[i].color_id;
                     armor.tag_id   = detections[i].tag_id;
@@ -582,84 +587,20 @@ int main ()
                     // std::cout << armor.img_center_dist << std::endl;
                 }
             }
-            if (!data_armor.empty()) {
-                
-                serial_.returnReceivePitch();
-                yaw_angle = serial_.returnReceiveYaw();
-                
-                // 离枪管最近装甲板
-                std::sort(data_armor.begin(), data_armor.end(), [](const armor_data &_a, const armor_data &_b) {
-                    return _a.img_center_dist < _b.img_center_dist;
-                });
-
-                if (data_armor.size() > 0) {
-                    cv::line(img1, data_armor[0].pts[0], data_armor[0].pts[1], colors[3], 2);
-                    cv::line(img1, data_armor[0].pts[1], data_armor[0].pts[2], colors[3], 2);
-                    cv::line(img1, data_armor[0].pts[2], data_armor[0].pts[3], colors[3], 2);
-                    cv::line(img1, data_armor[0].pts[3], data_armor[0].pts[0], colors[3], 2);
-                    cv::putText(img1, std::to_string(data_armor[0].tag_id), data_armor[0].pts[0], cv::FONT_HERSHEY_SIMPLEX, 1, colors[data_armor[0].color_id]);
-                }
-
-                std::vector<cv::Point2f> target_2d;
-                target_2d.push_back(data_armor[0].pts[0]);
-                target_2d.push_back(data_armor[0].pts[1]);
-                target_2d.push_back(data_armor[0].pts[2]);
-                target_2d.push_back(data_armor[0].pts[3]);
-                if (data_armor[0].tag_id == 1 || data_armor[0].tag_id == 0) {
-                    pnp_.solvePnP(serial_.returnReceiveBulletVelocity(), 1, target_2d);
-                } else {
-                    pnp_.solvePnP(serial_.returnReceiveBulletVelocity(), 0, target_2d);
-                }
-
-                if (last_yaw_angle != 0) {
-
-                    // 敌方机器人当前速度
-                    enemy_robot_v = (yaw_angle - last_yaw_angle) * pnp_.returnDepth();
-                    // 实际预测位置
-                    forecast_dist = enemy_robot_v * (time + 0.2);
-                    // 添加补偿宽度
-                    compensate_w = 8 * pnp_.returnDepth() / forecast_dist;
-
-                    std::vector<cv::Point2f> k_target_2d;
-                    for (int i = 0; i < target_2d.size(); i++) {
-                        k_target_2d.push_back(cv::Point2f(target_2d[i].x + compensate_w, target_2d[i].y));
-                    }
-                    
-                    if (data_armor[0].tag_id == 1 || data_armor[0].tag_id == 0) {
-                        pnp_.solvePnP(serial_.returnReceiveBulletVelocity(), 1, k_target_2d);
-                    } else {
-                        pnp_.solvePnP(serial_.returnReceiveBulletVelocity(), 0, k_target_2d);
-                    }
-
-                }
-
-                serial_.updataWriteData(pnp_.returnYawAngle(),
-                                        pnp_.returnPitchAngle(),
-                                        pnp_.returnDepth(),
-                                        1,
-                                        0);
-            }
-            serial_.updataWriteData(pnp_.returnYawAngle(),
-                        pnp_.returnPitchAngle(),
-                        pnp_.returnDepth(),
-                        0,
-                        0);
-            last_yaw_angle = yaw_angle;
-            data_armor.clear();
-            data_armor.shrink_to_fit();
-            // fps_count++;
-            time = ((double)getTickCount() - time) / getTickFrequency();
-            int fps = 1 / time;
-            cv::putText(img1, fmt::format("fps={}", fps), {10, 25}, cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(0, 0, 0));
-            cout<<"fps:"<<fps<<endl;
+            
+            // // fps_count++;
+            // time = ((double)getTickCount() - time) / getTickFrequency();
+            // int fps = 1 / time;
+            // // cv::putText(img1, fmt::format("fps={}", fps), {10, 25}, cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(0, 0, 0));
+            // cout<<"fps:"<<fps<<endl;
             // frame_0=mid_filer.clone();
-            cv::imshow("0", img1);
+            cv::imshow("Radar picture", img1);
             if(cv::waitKey(1) == 'q') {
                 break;
             }
         }
 
-        mv_capture_->cameraReleasebuff();        
+        // mv_capture_->cameraReleasebuff();        
         mv_capture_1->cameraReleasebuff();
 
     }
