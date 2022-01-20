@@ -18,6 +18,19 @@
 
 #include <CameraApi.h>
 
+#define SLOPE_FLYING_RECORD 0
+/**
+  @brief: 飞坡检测摄像头是否录制视频
+  @param: 0     不录制
+  @param: 1     录制
+**/
+
+#define DARTS_OPEN_RECORD 0
+/**
+  @brief: 飞镖门检测摄像头是否录制视频
+  @param: 0     不录制
+  @param: 1     录制
+**/
 namespace mindvision {
 
 static auto idntifier_green = fmt::format(fg(fmt::color::green) | fmt::emphasis::bold, "mv_video_capture");

@@ -1,14 +1,20 @@
 /*
  * @Author: your name
  * @Date: 2021-11-18 11:00:18
- * @LastEditTime: 2021-12-28 15:41:22
+ * @LastEditTime: 2022-01-20 22:08:18
  * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /code/code.cpp
  */
+#define CVUI_IMPLEMENTATION
+#define WINDOW_NAME "CVUI Hello World!"
+
 #include <iostream>
 #include <cstring>
+#include <time.h>
+#include <sys/timeb.h> 
 #include <stdio.h>
+#include <stdlib.h>
 #include <iomanip>
 #include <algorithm>
 #include <stdexcept>
@@ -27,15 +33,15 @@
 #include <opencv2/highgui.hpp>
 #include "radar/camera/mv_video_capture.hpp"
 #include "TRTModule.hpp"
+#include <python3.8/Python.h>
 #include <fmt/format.h>
 #include <fmt/color.h>
+#include "/home/joyce/workplace/rm/2022/code/cvui/cvui.h"
 #include "KCf/serial/uart_serial.hpp"
 #include "KCf/angle_solve/basic_pnp.hpp"
-
 using namespace std;
 using namespace cv;
 static bool debug = true;
-
 
 
 
@@ -426,10 +432,36 @@ Mat runCamera(mindvision::VideoCapture* mv_capture_,
         // }
 // }
 
-
+std::string getCurrentTimeStr()
+{
+  time_t t = time(NULL);
+  char ch[64] = {0};
+  char result[100] = {0};
+  strftime(ch, sizeof(ch) - 1, "%Y-%m-%d--%H:%M:%S", localtime(&t));
+  sprintf(result, "%s", ch);
+  return std::string(result);
+}
 int main () 
 {
 	// VideoCapture capture("/home/joyce/视频/闸门闪烁/闸门闪烁6.gif");
+    int change=1;
+    //视频录制
+    string video_file="/home/joyce/workplace/rm/2022/code/";
+
+    #if SLOPE_FLYING_RECORD == 1
+    string record_date="";
+    record_date=getCurrentTimeStr();
+    VideoWriter vw;
+    vw.open(video_file+"darts-"+record_date+".avi",VideoWriter::fourcc('M', 'J', 'P', 'G'),30,Size(1280,800));
+    #endif
+
+    #if DARTS_OPEN_RECORD == 1
+    string record_date_1="";
+    record_date_1=getCurrentTimeStr();
+    VideoWriter vw1;
+    vw1.open(video_file+"radar-"+record_date_1+".avi",VideoWriter::fourcc('M', 'J', 'P', 'G'),30,Size(1280,800));
+    #endif
+    //——————————————————————————————————
     TRTModule model("/home/joyce/workplace/rm/2022/code/KCf/asset/model-opt-3.onnx");
 
     uart::SerialPort serial_ = uart::SerialPort("/home/joyce/workplace/rm/2022/KCf/configs/serial/uart_serial_config.xml");
@@ -448,6 +480,7 @@ int main ()
     Mat background,foreground,foreground_BW;
     Mat mid_filer;   //中值滤波法后的照片
     Mat frame_0;
+    Mat frame_change;
     int count_num=0;
     // static int count_num=0;
 
@@ -463,6 +496,8 @@ int main ()
 	cv::Mat img;//装甲板
     cv::Mat img1;//飞镖
     cv::Mat darts_roi;
+    cv::Mat frame = cv::Mat(1200, 2000, CV_8UC3);
+
     const cv::Scalar colors[4] = {{255, 0, 0}, {0, 0, 255}, {0, 255, 0}, {255, 255, 255}};
 
 	// const double fx = 1755.8568155966806899;
@@ -479,12 +514,15 @@ int main ()
    	// namedWindow("Radar picture",WINDOW_NORMAL);
     // setWindowProperty("Radar picture", WND_PROP_FULLSCREEN, WINDOW_FULLSCREEN);    
 
+    cv::namedWindow(WINDOW_NAME);
+	cvui::init(WINDOW_NAME);
 
     while (true) 
     {
 
 		// 记录起始的时钟周期数
         double time = (double)getTickCount();
+        frame = cv::Scalar(49, 52, 49);
         // armor(mv_capture_,img,cap_,
         //         serial_,colors,
         //         pnp_, yaw_angle, last_yaw_angle, enemy_robot_v,
@@ -507,7 +545,23 @@ int main ()
             cap_.read(img);
             cap_1.read(img1);
         }
-        if (!img1.empty()) {
+        if (
+            (!img1.empty()
+            )
+        ||
+        (!img.empty())
+        ) 
+        {
+            
+            //视频录制
+            #if SLOPE_FLYING_RECORD == 1
+                vw.write(img);
+            #endif
+
+            #if DARTS_OPEN_RECORD == 1
+                vw1.write(img1);
+            #endif
+            //——————————————————————————————
             count_num=count_num+1;
             // cv::imshow("0", img);
             darts_roi=img(Rect((img.cols/2)-20,(img.rows/2)-20,140,140));
@@ -548,8 +602,10 @@ int main ()
 	    		}
 	        }
             frame_0=mid_filer.clone();
+            #if RECORD == 1
+                vw.write(img);
+            #endif
             imshow("0",img);
-
             //--------------------------------------------
             std::array<double, 4> q;
             double timestamp = 0.0;
@@ -595,6 +651,28 @@ int main ()
             cout<<"fps:"<<fps<<endl;
             // frame_0=mid_filer.clone();
             cv::imshow("Radar picture", img1);
+
+            if(change==1)
+            {
+                cvui::image(frame, 700, 20, img);
+            }else if(change==2)
+            {
+                cvui::image(frame, 700, 20, img1);
+            }
+            if (cvui::button(frame, 110, 80, "darts")) 
+            {
+                change=1;
+                // cvui::image(frame, 700, 20, img);
+		    }
+            if (cvui::button(frame, 110, 110, "feipo")) 
+            {
+                change=2;
+                // cvui::image(frame, 700, 20, img1);
+		    }
+
+            cvui::update();
+		    cv::imshow(WINDOW_NAME, frame);
+
             if(cv::waitKey(1) == 'q') {
                 break;
             }
