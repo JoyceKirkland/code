@@ -28,8 +28,6 @@ find_package(fmt REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(CUDA  REQUIRED)
 find_package(PythonLibs 3.8 REQUIRED)
-find_package(Qt5 COMPONENTS Widgets REQUIRED)
-
 FIND_PACKAGE( OpenMP REQUIRED)
 if(OPENMP_FOUND)
     message("OPENMP FOUND")
@@ -69,7 +67,6 @@ target_link_libraries(code
 	cuda
 	fmt::fmt
 	nvonnxparser
-	Qt5::Widgets
 )
 
 include_directories(basic_pnp)
