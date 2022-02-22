@@ -1,6 +1,15 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(code VERSION 0.1.0)
 
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 # include(CTest)
 # enable_testing()
 
@@ -27,6 +36,8 @@ find_package(Ceres 2 REQUIRED)
 find_package(fmt REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(CUDA  REQUIRED)
+find_package(Qt5 COMPONENTS Widgets REQUIRED)
+
 FIND_PACKAGE( OpenMP REQUIRED)
 if(OPENMP_FOUND)
     message("OPENMP FOUND")
@@ -53,7 +64,7 @@ include_directories(/usr/include/opencv4/opencv2)
 aux_source_directory(. ALL_SRCS)			# 添加当前目录下所有的源文件
 # name of executable file and path of source file
 add_executable(code ${ALL_SRCS})
-
+add_executable(mainwindow.h mainwindow.cpp mainwindow.ui)
 # opencv libraries
 target_link_libraries(code 
 	${OpenCV_LIBS}
@@ -64,6 +75,7 @@ target_link_libraries(code
 	cuda
 	fmt::fmt
 	nvonnxparser
+	Qt5::Widgets
 )
 
 include_directories(basic_pnp)

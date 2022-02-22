@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-11-18 11:00:18
- * @LastEditTime: 2021-12-28 15:41:22
+ * @LastEditTime: 2022-02-21 17:07:32
  * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /code/code.cpp
@@ -31,7 +31,9 @@
 #include <fmt/color.h>
 #include "KCf/serial/uart_serial.hpp"
 #include "KCf/angle_solve/basic_pnp.hpp"
-
+#include "mainwindow.h"
+#include <QLabel>
+#include <QApplication>
 using namespace std;
 using namespace cv;
 static bool debug = true;
@@ -427,8 +429,14 @@ Mat runCamera(mindvision::VideoCapture* mv_capture_,
 // }
 
 
-int main () 
+int main (int argc, char *argv[]) 
 {
+    QApplication a(argc, argv);
+    MainWindow w;
+    QLabel *label = new QLabel("Hello world");
+    label->show();
+    w.show();
+    // return a.exec();
 	// VideoCapture capture("/home/joyce/视频/闸门闪烁/闸门闪烁6.gif");
     TRTModule model("/home/joyce/workplace/rm/2022/code/KCf/asset/model-opt-3.onnx");
 
@@ -604,4 +612,5 @@ int main ()
         mv_capture_1->cameraReleasebuff();
 
     }
+        return a.exec();
 }
