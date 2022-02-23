@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-11-18 11:00:18
- * @LastEditTime: 2022-02-22 16:27:00
+ * @LastEditTime: 2022-02-23 21:26:36
  * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /code/code.cpp
@@ -432,6 +432,24 @@ Mat runCamera(mindvision::VideoCapture* mv_capture_,
             
         // }
 // }
+void drawMap(cv::Mat frame,cv::Mat rm_map,int count_num)
+{
+    cvui::image(frame, 20, 20, rm_map);
+    rectangle(rm_map,Rect(37,260,40,210),Scalar(0,255,0),2);//敌方飞坡区域
+    rectangle(rm_map,Rect(82,310,42,50),Scalar(0,255,0),2);//敌方大能量机关击打区域
+    rectangle(rm_map,Rect(390,20,42,50),Scalar(0,255,0),2);//敌方飞镖区域
+
+    if((sin((count_num*3.1415926)*16/180))>0)//||(sin((count_num*3.1415926*0.5)/180))<-0.5
+    {
+        circle(rm_map,Point(410,20),18,Scalar(255,0,0),-1);
+        // sleep(1);
+    }
+    else {
+        circle(rm_map,Point(410,20),18,Scalar(0,0,255),-1);
+        // count_num = 2;
+    }
+}
+
 
 std::string getCurrentTimeStr()
 {
@@ -446,9 +464,10 @@ int main ()
 {
 	// VideoCapture capture("/home/joyce/视频/闸门闪烁/闸门闪烁6.gif");
     int change=1;
+    int change_map=1;
     //视频录制
     string video_file="/home/joyce/workplace/rm/2022/code/";
-    cout<<sin((30*3.1415926)/180)<<endl;
+    // cout<<sin((30*3.1415926)/180)<<endl;
 
     #if SLOPE_FLYING_RECORD == 1
     string record_date="";
@@ -483,7 +502,7 @@ int main ()
     Mat mid_filer;   //中值滤波法后的照片
     Mat frame_0;
     Mat rm_map_bule=imread("/home/joyce/workplace/rm/2022/code/rm-map-bule.png");
-    Mat rm_map_red=imread("rm-map-red.png");
+    Mat rm_map_red=imread("/home/joyce/workplace/rm/2022/code/rm-map-red.png");
     int count_num=0;
     // static int count_num=0;
 
@@ -584,12 +603,8 @@ int main ()
 	        {
 		        background=frame_0; 
 	        }
-	        absdiff(mid_filer,background,foreground);//用帧差法求前景
-	        threshold( foreground, foreground_BW, 120, 255 , 0 );//二值化通常设置为50  255
-	   	    dilate(foreground_BW,foreground_BW,element);
-
-	        vector<vector<Point>> contours;
 	        vector<Vec4i> hierarchy;
+            vector<vector<Point>> contours;
 	        findContours(foreground_BW,contours,hierarchy,RETR_EXTERNAL,CHAIN_APPROX_NONE,Point());//寻找并绘制轮廓
             vector<Moments>mu(contours.size());
             for(unsigned i=0;i<contours.size();i++)//计算轮廓面积
@@ -604,6 +619,15 @@ int main ()
 	    		if(mu[i].m00<300)
 	    		{
 	    			rectangle(darts_roi, rect, Scalar(0, 255, 0), 3);	//在原图像上画出矩形
+                    if((sin((count_num*3.1415926)*16/180))>0)//||(sin((count_num*3.1415926*0.5)/180))<-0.5
+                    {
+                        circle(frame,Point(410,20),18,Scalar(255,0,0),-1);
+                        // sleep(1);
+                    }
+                    else {
+                        circle(frame,Point(410,20),18,Scalar(0,0,255),-1);
+                        // count_num = 2;
+                    }
 	    		}
 	        }
             frame_0=mid_filer.clone();
@@ -656,31 +680,37 @@ int main ()
             // cout<<"fps:"<<fps<<endl;                                                                                                                           
             // frame_0=mid_filer.clone();
             // cv::imshow("map", rm_map_bule);
-
-            cvui::image(frame, 20, 20, rm_map_bule);
-            if(count_num>32 && count_num<75)
+            
+            //_______________地图阵营选择，默认我方颜色在下方__________________//
+            if(change_map==1)//地图阵营切换，
             {
-                circle(rm_map_bule,Point(50,20),30,Scalar(255,0,0),-1);
-                // sleep(1);
+                drawMap(frame,rm_map_red,count_num);
+            }else if(change_map==2)
+            {
+                drawMap(frame,rm_map_bule,count_num);
             }
-            else {
-                circle(rm_map_bule,Point(50,20),30,Scalar(0,0,255),-1);
-                count_num = 2;
-            }
-            // cout<<"count_num："<<count_num<<endl;
-            if(change==1)
+            if (cvui::button(frame, 20, 1100, "red",1)) //我方阵营选择按钮：红方
+            {
+                change_map=1;
+		    }
+            if (cvui::button(frame, 180, 1100, "blue",1)) //我方阵营选择按钮：蓝方
+            {
+                change_map=2;
+		    }
+            //__________________________________________________
+            if(change==1)//主视频源视角切换
             {
                 cvui::image(frame, 700, 20, img);
             }else if(change==2)
             {
                 cvui::image(frame, 700, 20, img1);
             }
-            if (cvui::button(frame, 1780, 850, "darts",1.2)) 
+            if (cvui::button(frame, 1780, 850, "darts",1.2)) //飞镖视角按钮
             {
                 change=1;
                 // cvui::image(frame, 700, 20, img);
 		    }
-            if (cvui::button(frame, 1780, 950, "feipo",1.2)) 
+            if (cvui::button(frame, 1780, 950, "feipo",1.2)) //飞坡视角按钮
             {
                 change=2;
                 // cvui::image(frame, 700, 20, img1);
