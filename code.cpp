@@ -34,6 +34,8 @@
 #include "mainwindow.h"
 #include <QLabel>
 #include <QApplication>
+#include <qdebug.h>
+#include <qlabel.h>
 using namespace std;
 using namespace cv;
 static bool debug = true;
@@ -471,6 +473,8 @@ int main (int argc, char *argv[])
 	cv::Mat img;//装甲板
     cv::Mat img1;//飞镖
     cv::Mat darts_roi;
+    cv::Mat src;
+    QImage src_show;
     const cv::Scalar colors[4] = {{255, 0, 0}, {0, 0, 255}, {0, 255, 0}, {255, 255, 255}};
 
 	// const double fx = 1755.8568155966806899;
@@ -492,6 +496,18 @@ int main (int argc, char *argv[])
     {
 
 		// 记录起始的时钟周期数
+    //     src=imread("/home/joyce/图片/rm-map-bule.png");
+    //                     //toAscii()返回8位描述的string,为QByteArray,data()表示返回QByteArray的指针，QByteArray为字节指针，古老的toascii，我们使用toUtf8。网上有toLatin1，但是好像会出错
+    //     //src = imread("girl.jpg");
+    // //    namedWindow( "src", WINDOW_NORMAL );
+    //    if(!src.empty()){
+    //    imshow("src",src);
+    //    }
+
+    //    cvtColor( src, src, CV_BGR2RGB );
+    //    src_show = QImage( (const unsigned char*)(src.data), src.cols, src.rows, QImage::Format_RGB888 );
+    //    w->label->setPixmap( QPixmap::fromImage(img));
+    //    w->label->resize( ui->label->pixmap()->size());
         double time = (double)getTickCount();
         // armor(mv_capture_,img,cap_,
         //         serial_,colors,

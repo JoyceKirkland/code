@@ -12,6 +12,10 @@
 #include <QMainWindow>
 #include <QMouseEvent>
 #include <QLabel>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/core/core.hpp>
+using namespace cv;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -30,8 +34,12 @@ private slots:
 
     void on_pushButton_2_clicked();
 
+    void show_Image();
+
 private:
     Ui::MainWindow *ui;
+    Mat src;
+    QImage img;
 //    connect(pushButton, SIGNAL(clicked()), this, SLOT(on_pushButton_clicked()));
 //    void mousePressEvent(QMouseEvent *event)
 };
