@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-11-18 11:00:18
- * @LastEditTime: 2022-01-20 22:08:18
+ * @LastEditTime: 2022-02-22 16:27:00
  * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /code/code.cpp
@@ -39,6 +39,7 @@
 #include "/home/joyce/workplace/rm/2022/code/cvui/cvui.h"
 #include "KCf/serial/uart_serial.hpp"
 #include "KCf/angle_solve/basic_pnp.hpp"
+#include "math.h"
 using namespace std;
 using namespace cv;
 static bool debug = true;
@@ -447,6 +448,7 @@ int main ()
     int change=1;
     //视频录制
     string video_file="/home/joyce/workplace/rm/2022/code/";
+    cout<<sin((30*3.1415926)/180)<<endl;
 
     #if SLOPE_FLYING_RECORD == 1
     string record_date="";
@@ -480,7 +482,8 @@ int main ()
     Mat background,foreground,foreground_BW;
     Mat mid_filer;   //中值滤波法后的照片
     Mat frame_0;
-    Mat frame_change;
+    Mat rm_map_bule=imread("/home/joyce/workplace/rm/2022/code/rm-map-bule.png");
+    Mat rm_map_red=imread("rm-map-red.png");
     int count_num=0;
     // static int count_num=0;
 
@@ -513,6 +516,8 @@ int main ()
     Mat element = getStructuringElement(MORPH_RECT,Size(9,9));
    	// namedWindow("Radar picture",WINDOW_NORMAL);
     // setWindowProperty("Radar picture", WND_PROP_FULLSCREEN, WINDOW_FULLSCREEN);    
+    // cvui::image(frame, 20, 20, rm_map_bule);
+            // cv::imshow("map", rm_map_bule);
 
     cv::namedWindow(WINDOW_NAME);
 	cvui::init(WINDOW_NAME);
@@ -648,10 +653,21 @@ int main ()
             time = ((double)getTickCount() - time) / getTickFrequency();
             int fps = 1 / time;
             // // cv::putText(img1, fmt::format("fps={}", fps), {10, 25}, cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(0, 0, 0));
-            cout<<"fps:"<<fps<<endl;
+            // cout<<"fps:"<<fps<<endl;                                                                                                                           
             // frame_0=mid_filer.clone();
-            cv::imshow("Radar picture", img1);
+            // cv::imshow("map", rm_map_bule);
 
+            cvui::image(frame, 20, 20, rm_map_bule);
+            if(count_num>32 && count_num<75)
+            {
+                circle(rm_map_bule,Point(50,20),30,Scalar(255,0,0),-1);
+                // sleep(1);
+            }
+            else {
+                circle(rm_map_bule,Point(50,20),30,Scalar(0,0,255),-1);
+                count_num = 2;
+            }
+            // cout<<"count_num："<<count_num<<endl;
             if(change==1)
             {
                 cvui::image(frame, 700, 20, img);
@@ -659,17 +675,21 @@ int main ()
             {
                 cvui::image(frame, 700, 20, img1);
             }
-            if (cvui::button(frame, 110, 80, "darts")) 
+            if (cvui::button(frame, 1780, 850, "darts",1.2)) 
             {
                 change=1;
                 // cvui::image(frame, 700, 20, img);
 		    }
-            if (cvui::button(frame, 110, 110, "feipo")) 
+            if (cvui::button(frame, 1780, 950, "feipo",1.2)) 
             {
                 change=2;
                 // cvui::image(frame, 700, 20, img1);
 		    }
 
+            if (cvui::button(frame, 1780, 1050, "exit",1.2)) 
+            {
+                break;
+		    }
             cvui::update();
 		    cv::imshow(WINDOW_NAME, frame);
 
