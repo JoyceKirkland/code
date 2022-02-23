@@ -75,8 +75,9 @@ target_link_libraries(code
 	cuda
 	fmt::fmt
 	nvonnxparser
-	Qt5::Widgets
+	# Qt5::Widgets
 )
+target_link_libraries(code Qt5::Widgets)
 
 include_directories(basic_pnp)
 add_subdirectory(KCf/angle_solve)
