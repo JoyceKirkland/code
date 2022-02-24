@@ -1,13 +1,13 @@
 /*
  * @Author: your name
  * @Date: 2021-11-18 11:00:18
- * @LastEditTime: 2022-02-23 22:29:56
+ * @LastEditTime: 2022-02-24 15:24:30
  * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /code/code.cpp
  */
 #define CVUI_IMPLEMENTATION
-#define WINDOW_NAME "CVUI Hello World!"
+#define WINDOW_NAME "Radar"
 
 #include <iostream>
 #include <cstring>
@@ -634,6 +634,8 @@ int main ()
 	        vector<Vec4i> hierarchy;
             vector<vector<Point>> contours;
 	        findContours(foreground_BW,contours,hierarchy,RETR_EXTERNAL,CHAIN_APPROX_NONE,Point());//寻找并绘制轮廓
+            imshow("mask",foreground_BW);
+
             vector<Moments>mu(contours.size());
             for(unsigned i=0;i<contours.size();i++)//计算轮廓面积
             {
@@ -644,7 +646,7 @@ int main ()
 	    	    Rect rect = boundingRect(contours[i]);	//找出轮廓最小外界矩形
 	    		// cout << "矩形框" << rect.width << endl;
 	    		// if(mu[i].m00<2000&&mu[i].m00>125)
-	    		if(mu[i].m00<1800)//范围需要调整
+	    		if(mu[i].m00<1300)//范围需要调整
 	    		{
 	    			rectangle(darts_roi, rect, Scalar(0, 255, 0), 3);	//在原图像上画出矩形
                     warning_Lights(rm_map,count_num,410,90);
@@ -662,6 +664,7 @@ int main ()
                 }
 	        }
             frame_0=mid_filer.clone();
+            putText(img,"darts",Point(5,790),FONT_HERSHEY_PLAIN,2.0,Scalar(255,255,255),2);            
             #if RECORD == 1
                 vw.write(img);
             #endif
@@ -704,7 +707,9 @@ int main ()
                     // std::cout << armor.img_center_dist << std::endl;
                 }
             }
+            putText(img1,"feipo",Point(5,790),FONT_HERSHEY_PLAIN,2.0,Scalar(255,255,255),2);            
             drawMap(frame,rm_map,count_num);
+            
             // // fps_count++;
             time = ((double)getTickCount() - time) / getTickFrequency();
             int fps = 1 / time;
@@ -733,7 +738,9 @@ int main ()
             if(change==1)//主视频源视角切换
             {
                 cvui::image(frame, 700, 20, img);
-            }else if(change==2)
+                // putText(img,"飞镖",Point(100,250),FONT_HERSHEY_PLAIN,4.0,Scalar(0,255,255),2);            
+            }
+            else if(change==2)
             {
                 cvui::image(frame, 700, 20, img1);
             }
