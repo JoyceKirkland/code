@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-11-18 11:00:18
- * @LastEditTime: 2022-02-24 15:24:30
+ * @LastEditTime: 2022-03-10 15:36:37
  * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /code/code.cpp
@@ -455,7 +455,16 @@ void warning_Lights(cv::Mat rm_map,int count_num,int x,int y)
         // count_num = 2;
     }
 }
-
+bool fly_or_engery(int point_x,int point_y,cv::Rect rect)
+{
+    if(point_x>rect.x&&point_x<rect.x+rect.width&&point_y>rect.y&&point_y<rect.y+rect.height)
+    {
+        return true;
+    }else
+    {
+        return false;
+    }
+}
 std::string getCurrentTimeStr()
 {
   time_t t = time(NULL);
@@ -496,12 +505,14 @@ int main ()
                                          "/home/joyce/workplace/rm/2022/KCf/configs/angle_solve/basic_pnp_config.xml");
 
     mindvision::VideoCapture* mv_capture_ = new mindvision::VideoCapture(
-    mindvision::CameraParam(0, mindvision::RESOLUTION_1280_X_800, mindvision::EXPOSURE_10000),0);
+    mindvision::CameraParam(0, mindvision::RESOLUTION_1280_X_800, mindvision::EXPOSURE_10000),1);
     cv::VideoCapture cap_ = cv::VideoCapture(0);
 
     mindvision::VideoCapture* mv_capture_1 = new mindvision::VideoCapture(
-    mindvision::CameraParam(0, mindvision::RESOLUTION_1280_X_800, mindvision::EXPOSURE_10000),1);
+    mindvision::CameraParam(0, mindvision::RESOLUTION_1280_X_800, mindvision::EXPOSURE_10000),0);
     cv::VideoCapture cap_1 = cv::VideoCapture(1);
+
+
 
     Mat background,foreground,foreground_BW;
     Mat mid_filer;   //中值滤波法后的照片
@@ -571,6 +582,7 @@ int main ()
         {
             img = mv_capture_->image();
             img1=mv_capture_1->image();
+
         } else {
             cap_.read(img);
             cap_1.read(img1);
@@ -679,7 +691,8 @@ int main ()
             // /* publish detection results */
 
             /* show detections */
-
+            cv::Rect rect_fly(37,260,70,110);
+            cv::Rect rect_energy(112,310,72,150);
             if(!detections.empty()) {
                 cv::Mat im2show = img.clone();
                 // for (const auto &b: detections) {
@@ -698,8 +711,19 @@ int main ()
                     armor.confidence = detections[i].confidence;
                     armor.img_center_dist = getDistance((detections[i].pts[0] + detections[i].pts[3]) * 0.5, cv::Point(img1.cols * 0.5, img1.rows * 0.5 + 100));
                     //  && detections[i].tag_id != 2 
-                    warning_Lights(rm_map,count_num,150,340);//警报灯闪烁,大能量机关和飞坡暂时没做区别
-                    warning_Lights(rm_map,count_num,92,480);
+                    // cout<<"point:("<<detections[i].pts[0]<<","<<detections[i].pts[1]<<")"<<endl;
+                    for(int j=0;j<4;j++)
+                    {
+                        if(fly_or_engery(detections[i].pts[j].x,detections[i].pts[j].y,rect_fly))//装甲板是否出现在飞坡区域
+                        {
+                            warning_Lights(rm_map,count_num,92,480);
+                        }
+                        if(fly_or_engery(detections[i].pts[j].x,detections[i].pts[j].y,rect_energy))//装甲板是否出现在能量机关击打区域
+                        {
+                            warning_Lights(rm_map,count_num,150,340);
+                        }
+
+                    }
                     if (serial_.returnReceiceColor() != detections[i].color_id && detections[i].confidence > 0.5 ) 
                     {
                         data_armor.push_back(armor);
@@ -707,7 +731,13 @@ int main ()
                     // std::cout << armor.img_center_dist << std::endl;
                 }
             }
-            putText(img1,"feipo",Point(5,790),FONT_HERSHEY_PLAIN,2.0,Scalar(255,255,255),2);            
+            putText(img1,"feipo",Point(5,790),FONT_HERSHEY_PLAIN,2.0,Scalar(255,255,255),2);
+            // cv::Rect rect_fly(37,260,70,110);
+            // cv::Rect rect_energy(112,310,72,150);
+
+            rectangle(img1,rect_fly,Scalar(0,255,0),2);//敌方飞坡区域
+            rectangle(img1,rect_energy,Scalar(0,255,0),2);//敌方大能量机关击打区域
+            
             drawMap(frame,rm_map,count_num);
             
             // // fps_count++;
