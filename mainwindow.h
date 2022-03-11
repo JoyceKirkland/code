@@ -27,6 +27,8 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QWidget *parent = nullptr);
+    void show_Image();
+
     ~MainWindow();
 
 private slots:
@@ -34,7 +36,6 @@ private slots:
 
     void on_pushButton_2_clicked();
 
-    void show_Image();
 
 private:
     Ui::MainWindow *ui;

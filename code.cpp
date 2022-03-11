@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-11-18 11:00:18
- * @LastEditTime: 2022-02-23 13:34:23
+ * @LastEditTime: 2022-03-10 17:11:51
  * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /code/code.cpp
@@ -435,6 +435,7 @@ int main (int argc, char *argv[])
 {
     QApplication a(argc, argv);
     MainWindow w;
+    w.show_Image();
     // QLabel *label = new QLabel("Hello world");
     // label->show();
     w.show();
