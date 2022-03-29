@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-11-18 11:00:18
- * @LastEditTime: 2022-03-10 15:36:37
+ * @LastEditTime: 2022-03-29 20:45:41
  * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /code/code.cpp
@@ -25,6 +25,11 @@
 #include <linux/usbdevice_fs.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
+#include <memory>
+#include <atomic>
+#include <chrono>
+#include <exception>
+#include <thread>
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/utility.hpp>
 #include <opencv2/tracking.hpp>
@@ -33,13 +38,16 @@
 #include <opencv2/highgui.hpp>
 #include "radar/camera/mv_video_capture.hpp"
 #include "TRTModule.hpp"
-#include <python3.8/Python.h>
+// #include <python3.8/Python.h>
 #include <fmt/format.h>
 #include <fmt/color.h>
 #include "/home/joyce/workplace/rm/2022/code/cvui/cvui.h"
-#include "KCf/serial/uart_serial.hpp"
+// #include "KCf/serial/uart_serial.hpp"
 #include "KCf/angle_solve/basic_pnp.hpp"
 #include "math.h"
+// #include "KCf/camera/mv_video_capture.hpp"
+#include "KCf/devices/new_serial/serial.hpp"
+// #include "KCf/devices/serial/uart_serial.hpp"
 using namespace std;
 using namespace cv;
 static bool debug = true;
@@ -432,6 +440,28 @@ Mat runCamera(mindvision::VideoCapture* mv_capture_,
             
         // }
 // }
+
+void uartReadThread(const std::shared_ptr<RoboSerial> &serial,
+                    RoboInf &robo_inf) {
+  while (true) try {
+      if(serial->isOpen()) {
+        serial->ReceiveInfo(robo_inf);
+      }
+      std::this_thread::sleep_for(1ms);
+    } catch (const std::exception &e) {
+      static int serial_read_excepted_times{0};
+      if (serial_read_excepted_times++ > 3) {
+        std::this_thread::sleep_for(10000ms);
+        fmt::print("[{}] read serial excepted to many times, sleep 10s.\n",
+                   idntifier_red);
+        serial_read_excepted_times = 0;
+      }
+      fmt::print("[{}] serial exception: {}\n",
+                 idntifier_red, e.what());
+      std::this_thread::sleep_for(1000ms);
+    }
+}
+
 void drawMap(cv::Mat frame,cv::Mat rm_map,int count_num)
 {
     cvui::image(frame, 20, 20, rm_map);
@@ -441,6 +471,30 @@ void drawMap(cv::Mat frame,cv::Mat rm_map,int count_num)
     circle(rm_map,Point(410,90),18,Scalar(255,0,0),-1);
     circle(rm_map,Point(150,340),18,Scalar(255,0,0),-1);
     circle(rm_map,Point(92,480),18,Scalar(255,0,0),-1);
+    cvui::printf(frame, 695, 830, 1.3, 0xFFFFFF, "Red:");//红方各兵种、模块血量，蓝方下同
+    cvui::printf(frame, 695, 870, 0.9, 0xFFFFFF, "R1:");//英雄
+    cvui::printf(frame, 695, 900, 0.9, 0xFFFFFF, "R2:");//工程
+    cvui::printf(frame, 695, 930, 0.9, 0xFFFFFF, "R3:");//步兵3
+    cvui::printf(frame, 695, 960, 0.9, 0xFFFFFF, "R4:");//步兵4
+    cvui::printf(frame, 695, 990, 0.9, 0xFFFFFF, "R5:");//步兵5
+    cvui::printf(frame, 695, 1020, 0.9, 0xFFFFFF, "R7:");//哨兵
+    cvui::printf(frame, 695, 1050, 0.9, 0xFFFFFF, "R6:");//无人机
+    cvui::printf(frame, 695, 1080, 0.9, 0xFFFFFF, "---------");
+    cvui::printf(frame, 695, 1110, 0.9, 0xFFFFFF, "RO:");//前哨站
+    cvui::printf(frame, 695, 1140, 0.9, 0xFFFFFF, "RB:");//基地
+
+    //______________________________________________
+    cvui::printf(frame, 1080, 830, 1.3, 0xFFFFFF, "Blue:");
+    cvui::printf(frame, 1080, 870, 0.9, 0xFFFFFF, "B1:");
+    cvui::printf(frame, 1080, 900, 0.9, 0xFFFFFF, "B2:");
+    cvui::printf(frame, 1080, 930, 0.9, 0xFFFFFF, "B3:");
+    cvui::printf(frame, 1080, 960, 0.9, 0xFFFFFF, "B4:");
+    cvui::printf(frame, 1080, 990, 0.9, 0xFFFFFF, "B5:");
+    cvui::printf(frame, 1080, 1020, 0.9, 0xFFFFFF, "B7:");
+    cvui::printf(frame, 1080, 1050, 0.9, 0xFFFFFF, "B6:");
+    cvui::printf(frame, 1080, 1080, 0.9, 0xFFFFFF, "---------");
+    cvui::printf(frame, 1080, 1110, 0.9, 0xFFFFFF, "BO:");
+    cvui::printf(frame, 1080, 1140, 0.9, 0xFFFFFF, "BB:");
 }
 void warning_Lights(cv::Mat rm_map,int count_num,int x,int y)
 {
@@ -474,11 +528,48 @@ std::string getCurrentTimeStr()
   sprintf(result, "%s", ch);
   return std::string(result);
 }
+/*
+ *关于串口：1、使用c++11相关的新串口库。2、因为建立了收发信息对应的多线程，因此要去了解原子的坑。
+ 3、在收信息时可能要写18条store（避免线程互斥的操作，接受之后用于处理数据），所以要用指针遍历结构体，用for。  
+    robo_inf.yaw_angle.store(robo_inf_uart_temp.yaw_angle);
+4、cmake相关不用单独写一个CMakeList，直接添加到总CMakeList即可。
+ */
 int main () 
 {
 	// VideoCapture capture("/home/joyce/视频/闸门闪烁/闸门闪烁6.gif");
+    RoboInf robo_inf;
+
+    // auto streamer_ptr = std::make_shared<nadjieb::MJPEGStreamer>();
+    // streamer_ptr->start(8080);
+
+    auto serial = std::make_shared<RoboSerial>("/dev/ch340g", 115200);
+
+    std::thread uart_read_thread(uartReadThread, serial, std::ref(robo_inf));
+    uart_read_thread.detach();
+
+    cout<<"robo_inf:color:"<<robo_inf.my_color<<endl;
+    cout<<"robo_inf:reds:"<<robo_inf.Receive_Red_HP.R_Hero_HP<<endl;
+    cout<<"robo_inf:reds:"<<robo_inf.Receive_Red_HP.R_Engineer_HP<<endl;
+    cout<<"robo_inf:reds:"<<robo_inf.Receive_Red_HP.R_Infantry3_HP<<endl;
+    cout<<"robo_inf:reds:"<<robo_inf.Receive_Red_HP.R_Infantry4_HP<<endl;
+    cout<<"robo_inf:reds:"<<robo_inf.Receive_Red_HP.R_Infantry5_HP<<endl;
+    cout<<"robo_inf:reds:"<<robo_inf.Receive_Red_HP.R_Outpost_HP<<endl;
+    cout<<"robo_inf:reds:"<<robo_inf.Receive_Red_HP.R_Sentry_HP<<endl;
+    cout<<"robo_inf:reds:"<<robo_inf.Receive_Red_HP.R_Base_HP<<endl;
+
+    cout<<"robo_inf:reds:"<<robo_inf.Receive_Blue_HP.B_Hero_HP<<endl;
+    cout<<"robo_inf:reds:"<<robo_inf.Receive_Blue_HP.B_Engineer_HP<<endl;
+    cout<<"robo_inf:reds:"<<robo_inf.Receive_Blue_HP.B_Infantry3_HP<<endl;
+    cout<<"robo_inf:reds:"<<robo_inf.Receive_Blue_HP.B_Infantry4_HP<<endl;
+    cout<<"robo_inf:reds:"<<robo_inf.Receive_Blue_HP.B_Infantry5_HP<<endl;
+    cout<<"robo_inf:reds:"<<robo_inf.Receive_Blue_HP.B_Outpost_HP<<endl;
+    cout<<"robo_inf:reds:"<<robo_inf.Receive_Blue_HP.B_Sentry_HP<<endl;
+    cout<<"robo_inf:reds:"<<robo_inf.Receive_Blue_HP.B_Base_HP<<endl;
+
+    //————————————————————————————————————————————————————
     int change=1;
     int change_map=1;
+
     //视频录制
     string video_file="/home/joyce/workplace/rm/2022/code/";
     // cout<<sin((30*3.1415926)/180)<<endl;
@@ -499,17 +590,17 @@ int main ()
     //——————————————————————————————————
     TRTModule model("/home/joyce/workplace/rm/2022/code/KCf/asset/model-opt-3.onnx");
 
-    uart::SerialPort serial_ = uart::SerialPort("/home/joyce/workplace/rm/2022/KCf/configs/serial/uart_serial_config.xml");
+    // uart::SerialPort serial_ = uart::SerialPort("/home/joyce/workplace/rm/2022/KCf/configs/serial/uart_serial_config.xml");
 
     basic_pnp::PnP pnp_ = basic_pnp::PnP("/home/joyce/workplace/rm/2022/KCf/configs/camera/mv_camera_config_555.xml", 
                                          "/home/joyce/workplace/rm/2022/KCf/configs/angle_solve/basic_pnp_config.xml");
 
     mindvision::VideoCapture* mv_capture_ = new mindvision::VideoCapture(
-    mindvision::CameraParam(0, mindvision::RESOLUTION_1280_X_800, mindvision::EXPOSURE_10000),1);
+    mindvision::CameraParam(0, mindvision::RESOLUTION_1280_X_800, mindvision::EXPOSURE_10000),0);
     cv::VideoCapture cap_ = cv::VideoCapture(0);
 
     mindvision::VideoCapture* mv_capture_1 = new mindvision::VideoCapture(
-    mindvision::CameraParam(0, mindvision::RESOLUTION_1280_X_800, mindvision::EXPOSURE_10000),0);
+    mindvision::CameraParam(0, mindvision::RESOLUTION_1280_X_800, mindvision::EXPOSURE_10000),1);
     cv::VideoCapture cap_1 = cv::VideoCapture(1);
 
 
@@ -691,8 +782,8 @@ int main ()
             // /* publish detection results */
 
             /* show detections */
-            cv::Rect rect_fly(37,260,70,110);
-            cv::Rect rect_energy(112,310,72,150);
+            cv::Rect rect_fly(37,260,180,180);
+            cv::Rect rect_energy(230,310,180,180);
             if(!detections.empty()) {
                 cv::Mat im2show = img.clone();
                 // for (const auto &b: detections) {
@@ -724,17 +815,17 @@ int main ()
                         }
 
                     }
-                    if (serial_.returnReceiceColor() != detections[i].color_id && detections[i].confidence > 0.5 ) 
-                    {
-                        data_armor.push_back(armor);
-                    }
-                    // std::cout << armor.img_center_dist << std::endl;
+                    // if (serial_.returnReceiceColor() != detections[i].color_id && detections[i].confidence > 0.5 ) 
+                    // {
+                    //     data_armor.push_back(armor);
+                    // }
+                    
                 }
             }
             putText(img1,"feipo",Point(5,790),FONT_HERSHEY_PLAIN,2.0,Scalar(255,255,255),2);
             // cv::Rect rect_fly(37,260,70,110);
             // cv::Rect rect_energy(112,310,72,150);
-
+            // cvui::printf(frame, 1550, 90, 0.6, 0xff0000, "count_num: %d", count_num);
             rectangle(img1,rect_fly,Scalar(0,255,0),2);//敌方飞坡区域
             rectangle(img1,rect_energy,Scalar(0,255,0),2);//敌方大能量机关击打区域
             
@@ -789,10 +880,26 @@ int main ()
             {
                 break;
 		    }
+            // cout<<"???"<<endl;
+            //_______________________________
+            // cvui::printf(frame, 695, 830, 1.3, 0xff0000, "Red:");
+            // cvui::printf(frame, 695, 870, 0.9, 0xFFFFFF, "R1:");
+            // cvui::printf(frame, 695, 900, 0.9, 0xFFFFFF, "R2:");
+            // cvui::printf(frame, 695, 930, 0.9, 0xFFFFFF, "R3:");
+            // cvui::printf(frame, 695, 960, 0.9, 0xFFFFFF, "R4:");
+            // cvui::printf(frame, 695, 990, 0.9, 0xFFFFFF, "R5:");
+            // cvui::printf(frame, 695, 1020, 0.9, 0xFFFFFF, "R6:");
+            // cvui::printf(frame, 695, 1050, 0.9, 0xFFFFFF, "--------");
+            // cvui::printf(frame, 695, 1080, 0.9, 0xFFFFFF, "R7:");
+            // cvui::printf(frame, 695, 1110, 0.9, 0xFFFFFF, "RO:");
+            // cvui::printf(frame, 695, 1140, 0.9, 0xFFFFFF, "RB:");
+            //_______________________________
             cvui::update();
 		    cv::imshow(WINDOW_NAME, frame);
-
+            // std::cout <<"serial_is:" <<serial_.isEmpty() << std::endl;
+            // std::cout <<"serial:" <<serial_.returnReceiceColor() << std::endl;
             if(cv::waitKey(1) == 'q') {
+                uart_read_thread.~thread();
                 break;
             }
         }

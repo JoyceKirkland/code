@@ -52,10 +52,25 @@ link_libraries(${CERES_LIBS})
 # include_directories(/usr/local/cuda-11.4/lib)
 include_directories(/usr/include/opencv4/opencv2)
 
+#Uart
+# add_library(serial KCF/devices/serial/uart_serial.cpp)
+# target_link_libraries(code serial)
 
 aux_source_directory(. ALL_SRCS)			# 添加当前目录下所有的源文件
 # name of executable file and path of source file
 add_executable(code ${ALL_SRCS})
+
+set(serial_SRCS
+	KCf/devices/new_serial/src/serial.cc
+	KCf/devices/new_serial/src/impl/unix.cc
+	KCf/devices/new_serial/src/impl/list_ports/list_ports_linux.cc
+	KCf/devices/new_serial/serial/serial.h
+	KCf/devices/new_serial/serial/v8stdint.h
+)
+include_directories(KCf/devices/new_serial)
+add_library(new_serial ${serial_SRCS})
+target_link_libraries(code new_serial)
+
 
 # opencv libraries
 target_link_libraries(code 
@@ -81,6 +96,6 @@ target_link_libraries(code capture)
 # add_subdirectory(KCF/kcf)
 # target_link_libraries(code kcf)
 
-include_directories(serial)
-add_subdirectory(KCf/serial)
-target_link_libraries(code serial)
+# include_directories(serial)
+# add_subdirectory(KCf/devices/serial)
+# target_link_libraries(code serial)
