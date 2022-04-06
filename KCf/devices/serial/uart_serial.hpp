@@ -33,7 +33,7 @@ namespace uart
   enum BufferLength
   {
     // The recieve length of the array obtained after decoding
-    REC_INFO_LENGTH = 21,//16
+    REC_INFO_LENGTH = 19,//16
 
     // The send length of the array for CRC auth code code calculating
     CRC_BUFF_LENGTH = 11,
@@ -128,7 +128,7 @@ namespace uart
     // float acceleration;
 
     // Description of the yaw axis angle of the gyroscope (signed)
-    union Receive_Red_Information
+    union Receive_Information
     {
       uint16_t R_Hero_HP;
       uint16_t R_Engineer_HP;
@@ -136,47 +136,38 @@ namespace uart
       uint16_t R_Infantry4_HP;
       uint16_t R_Infantry5_HP;
       uint16_t R_Sentry_HP;
-      uint16_t R_Uav_HP;
       uint16_t R_Outpost_HP;
       uint16_t R_Base_HP;
-    } Receive_Red_HP;
-
-    // Description of the pitch axis angle of the gyroscope (signed)
-    union Receive_Blue_Information
-    {
       uint16_t B_Hero_HP;
       uint16_t B_Engineer_HP;
       uint16_t B_Infantry3_HP;
       uint16_t B_Infantry4_HP;
       uint16_t B_Infantry5_HP;
       uint16_t B_Sentry_HP;
-      uint16_t B_Uav_HP;
       uint16_t B_Outpost_HP;
       uint16_t B_Base_HP;
-    } Receive_Blue_HP;
+    } Receive_Information;
 
     Receive_Data()
     {
       my_color = ALL;
-      Receive_Red_HP.R_Hero_HP = 0;
-      Receive_Red_HP.R_Engineer_HP = 0;
-      Receive_Red_HP.R_Infantry3_HP = 0;
-      Receive_Red_HP.R_Infantry4_HP = 0;
-      Receive_Red_HP.R_Infantry5_HP = 0;
-      Receive_Red_HP.R_Sentry_HP = 0;
-      Receive_Red_HP.R_Uav_HP = 0;
-      Receive_Red_HP.R_Outpost_HP = 0;
-      Receive_Red_HP.R_Base_HP = 0;
+      Receive_Information.R_Hero_HP = 0;
+      Receive_Information.R_Engineer_HP = 0;
+      Receive_Information.R_Infantry3_HP = 0;
+      Receive_Information.R_Infantry4_HP = 0;
+      Receive_Information.R_Infantry5_HP = 0;
+      Receive_Information.R_Sentry_HP = 0;
+      Receive_Information.R_Outpost_HP = 0;
+      Receive_Information.R_Base_HP = 0;
 
-      Receive_Blue_HP.B_Hero_HP = 0;
-      Receive_Blue_HP.B_Engineer_HP = 0;
-      Receive_Blue_HP.B_Infantry3_HP = 0;
-      Receive_Blue_HP.B_Infantry4_HP = 0;
-      Receive_Blue_HP.B_Infantry5_HP = 0;
-      Receive_Blue_HP.B_Sentry_HP = 0;
-      Receive_Blue_HP.B_Uav_HP = 0;
-      Receive_Blue_HP.B_Outpost_HP = 0;
-      Receive_Blue_HP.B_Base_HP = 0;
+      Receive_Information.B_Hero_HP = 0;
+      Receive_Information.B_Engineer_HP = 0;
+      Receive_Information.B_Infantry3_HP = 0;
+      Receive_Information.B_Infantry4_HP = 0;
+      Receive_Information.B_Infantry5_HP = 0;
+      Receive_Information.B_Sentry_HP = 0;
+      Receive_Information.B_Outpost_HP = 0;
+      Receive_Information.B_Base_HP = 0;
 
     }
   };

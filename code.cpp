@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-11-18 11:00:18
- * @LastEditTime: 2022-03-29 20:45:41
+ * @LastEditTime: 2022-04-01 22:01:26
  * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /code/code.cpp
@@ -46,8 +46,8 @@
 #include "KCf/angle_solve/basic_pnp.hpp"
 #include "math.h"
 // #include "KCf/camera/mv_video_capture.hpp"
-#include "KCf/devices/new_serial/serial.hpp"
-// #include "KCf/devices/serial/uart_serial.hpp"
+// #include "KCf/devices/new_serial/serial.hpp"
+#include "KCf/devices/serial/uart_serial.hpp"
 using namespace std;
 using namespace cv;
 static bool debug = true;
@@ -441,27 +441,6 @@ Mat runCamera(mindvision::VideoCapture* mv_capture_,
         // }
 // }
 
-void uartReadThread(const std::shared_ptr<RoboSerial> &serial,
-                    RoboInf &robo_inf) {
-  while (true) try {
-      if(serial->isOpen()) {
-        serial->ReceiveInfo(robo_inf);
-      }
-      std::this_thread::sleep_for(1ms);
-    } catch (const std::exception &e) {
-      static int serial_read_excepted_times{0};
-      if (serial_read_excepted_times++ > 3) {
-        std::this_thread::sleep_for(10000ms);
-        fmt::print("[{}] read serial excepted to many times, sleep 10s.\n",
-                   idntifier_red);
-        serial_read_excepted_times = 0;
-      }
-      fmt::print("[{}] serial exception: {}\n",
-                 idntifier_red, e.what());
-      std::this_thread::sleep_for(1000ms);
-    }
-}
-
 void drawMap(cv::Mat frame,cv::Mat rm_map,int count_num)
 {
     cvui::image(frame, 20, 20, rm_map);
@@ -537,34 +516,30 @@ std::string getCurrentTimeStr()
 int main () 
 {
 	// VideoCapture capture("/home/joyce/视频/闸门闪烁/闸门闪烁6.gif");
-    RoboInf robo_inf;
 
     // auto streamer_ptr = std::make_shared<nadjieb::MJPEGStreamer>();
     // streamer_ptr->start(8080);
 
-    auto serial = std::make_shared<RoboSerial>("/dev/ch340g", 115200);
 
-    std::thread uart_read_thread(uartReadThread, serial, std::ref(robo_inf));
-    uart_read_thread.detach();
 
-    cout<<"robo_inf:color:"<<robo_inf.my_color<<endl;
-    cout<<"robo_inf:reds:"<<robo_inf.Receive_Red_HP.R_Hero_HP<<endl;
-    cout<<"robo_inf:reds:"<<robo_inf.Receive_Red_HP.R_Engineer_HP<<endl;
-    cout<<"robo_inf:reds:"<<robo_inf.Receive_Red_HP.R_Infantry3_HP<<endl;
-    cout<<"robo_inf:reds:"<<robo_inf.Receive_Red_HP.R_Infantry4_HP<<endl;
-    cout<<"robo_inf:reds:"<<robo_inf.Receive_Red_HP.R_Infantry5_HP<<endl;
-    cout<<"robo_inf:reds:"<<robo_inf.Receive_Red_HP.R_Outpost_HP<<endl;
-    cout<<"robo_inf:reds:"<<robo_inf.Receive_Red_HP.R_Sentry_HP<<endl;
-    cout<<"robo_inf:reds:"<<robo_inf.Receive_Red_HP.R_Base_HP<<endl;
+    // cout<<"robo_inf:color:"<<robo_inf.my_color<<endl;
+    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.R_Hero_HP<<endl;
+    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.R_Engineer_HP<<endl;
+    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.R_Infantry3_HP<<endl;
+    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.R_Infantry4_HP<<endl;
+    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.R_Infantry5_HP<<endl;
+    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.R_Outpost_HP<<endl;
+    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.R_Sentry_HP<<endl;
+    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.R_Base_HP<<endl;
 
-    cout<<"robo_inf:reds:"<<robo_inf.Receive_Blue_HP.B_Hero_HP<<endl;
-    cout<<"robo_inf:reds:"<<robo_inf.Receive_Blue_HP.B_Engineer_HP<<endl;
-    cout<<"robo_inf:reds:"<<robo_inf.Receive_Blue_HP.B_Infantry3_HP<<endl;
-    cout<<"robo_inf:reds:"<<robo_inf.Receive_Blue_HP.B_Infantry4_HP<<endl;
-    cout<<"robo_inf:reds:"<<robo_inf.Receive_Blue_HP.B_Infantry5_HP<<endl;
-    cout<<"robo_inf:reds:"<<robo_inf.Receive_Blue_HP.B_Outpost_HP<<endl;
-    cout<<"robo_inf:reds:"<<robo_inf.Receive_Blue_HP.B_Sentry_HP<<endl;
-    cout<<"robo_inf:reds:"<<robo_inf.Receive_Blue_HP.B_Base_HP<<endl;
+    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.B_Hero_HP<<endl;
+    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.B_Engineer_HP<<endl;
+    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.B_Infantry3_HP<<endl;
+    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.B_Infantry4_HP<<endl;
+    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.B_Infantry5_HP<<endl;
+    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.B_Outpost_HP<<endl;
+    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.B_Sentry_HP<<endl;
+    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.B_Base_HP<<endl;
 
     //————————————————————————————————————————————————————
     int change=1;
@@ -590,7 +565,7 @@ int main ()
     //——————————————————————————————————
     TRTModule model("/home/joyce/workplace/rm/2022/code/KCf/asset/model-opt-3.onnx");
 
-    // uart::SerialPort serial_ = uart::SerialPort("/home/joyce/workplace/rm/2022/KCf/configs/serial/uart_serial_config.xml");
+    uart::SerialPort serial_ = uart::SerialPort("/home/joyce/workplace/rm/2022/KCf/configs/serial/uart_serial_config.xml");
 
     basic_pnp::PnP pnp_ = basic_pnp::PnP("/home/joyce/workplace/rm/2022/KCf/configs/camera/mv_camera_config_555.xml", 
                                          "/home/joyce/workplace/rm/2022/KCf/configs/angle_solve/basic_pnp_config.xml");
@@ -603,7 +578,7 @@ int main ()
     mindvision::CameraParam(0, mindvision::RESOLUTION_1280_X_800, mindvision::EXPOSURE_10000),1);
     cv::VideoCapture cap_1 = cv::VideoCapture(1);
 
-
+    
 
     Mat background,foreground,foreground_BW;
     Mat mid_filer;   //中值滤波法后的照片
