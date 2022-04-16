@@ -336,7 +336,7 @@ void SerialPort::updateReceiveInformation() {
   // }
 
   // receive_data_.acceleration = SerialPort::mergeIntoBytes(receive_buff_[12], receive_buff_[13]) / 100.f;
-}
+// }
 
 
 

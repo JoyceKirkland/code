@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2022-03-28 21:18:32
- * @LastEditTime: 2022-03-29 17:17:17
+ * @LastEditTime: 2022-04-16 21:07:02
  * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /code/KCf/devices/new_serial/serial.hpp
@@ -39,38 +39,52 @@ class RoboSerial : public serial::Serial {
   }
 
   void ReceiveInfo(RoboInf &robo_inf) {
+    //  std::cout<<"????"<<std::endl;
     RoboInfUartBuff robo_inf_uart_temp;
     uint8_t temp;
     this->read(&temp, 1);
-    while (temp != 'S')
+    
+    while (temp != 'c'){
       this->read(&temp, 1);
-    this->read((uint8_t *)&robo_inf_uart_temp, sizeof(robo_inf_uart_temp));
-    // robo_inf.yaw_angle.store(robo_inf_uart_temp.yaw_angle);
-    robo_inf.my_color.store(robo_inf_uart_temp.my_color);
-    // for(int i=0;i!=sizeof(robo_inf.Receive_Red_HP);i++)
-    {
-      robo_inf.Receive_Red_HP.R_Hero_HP.store(robo_inf_uart_temp.Receive_Red_HP.R_Hero_HP);
-      robo_inf.Receive_Red_HP.R_Engineer_HP.store(robo_inf_uart_temp.Receive_Red_HP.R_Engineer_HP);
-      robo_inf.Receive_Red_HP.R_Infantry3_HP.store(robo_inf_uart_temp.Receive_Red_HP.R_Infantry3_HP);
-      robo_inf.Receive_Red_HP.R_Infantry4_HP.store(robo_inf_uart_temp.Receive_Red_HP.R_Infantry4_HP);
-      robo_inf.Receive_Red_HP.R_Infantry5_HP.store(robo_inf_uart_temp.Receive_Red_HP.R_Infantry5_HP);
-      robo_inf.Receive_Red_HP.R_Sentry_HP.store(robo_inf_uart_temp.Receive_Red_HP.R_Sentry_HP);
-      robo_inf.Receive_Red_HP.R_Outpost_HP.store(robo_inf_uart_temp.Receive_Red_HP.R_Outpost_HP);
-      robo_inf.Receive_Red_HP.R_Base_HP.store(robo_inf_uart_temp.Receive_Red_HP.R_Base_HP);
-    }
-    {
-      robo_inf.Receive_Blue_HP.B_Hero_HP.store(robo_inf_uart_temp.Receive_Blue_HP.B_Hero_HP);
-      robo_inf.Receive_Blue_HP.B_Hero_HP.store(robo_inf_uart_temp.Receive_Blue_HP.B_Hero_HP);
-      robo_inf.Receive_Blue_HP.B_Engineer_HP.store(robo_inf_uart_temp.Receive_Blue_HP.B_Engineer_HP);
-      robo_inf.Receive_Blue_HP.B_Infantry3_HP.store(robo_inf_uart_temp.Receive_Blue_HP.B_Infantry3_HP);
-      robo_inf.Receive_Blue_HP.B_Infantry4_HP.store(robo_inf_uart_temp.Receive_Blue_HP.B_Infantry4_HP);
-      robo_inf.Receive_Blue_HP.B_Infantry5_HP.store(robo_inf_uart_temp.Receive_Blue_HP.B_Infantry5_HP);
-      robo_inf.Receive_Blue_HP.B_Sentry_HP.store(robo_inf_uart_temp.Receive_Blue_HP.B_Sentry_HP);
-      robo_inf.Receive_Blue_HP.B_Outpost_HP.store(robo_inf_uart_temp.Receive_Blue_HP.B_Outpost_HP);
-      robo_inf.Receive_Blue_HP.B_Base_HP.store(robo_inf_uart_temp.Receive_Red_HP.R_Base_HP);
+      std::cout<<"temp_:"<<(int8_t)temp<<std::endl;
 
-    }
-    // cout<<"color:"<<robo_inf.my_color<<endl;
+    // std::cout<<"???????????????????"<<std::endl;
+
+      }
+          std::cout<<"temp_:"<<(char)temp<<std::endl;
+
+    std::cout<<"temp:"<<sizeof(temp)<<std::endl;
+
+    this->read((uint8_t *)&robo_inf_uart_temp, sizeof(robo_inf_uart_temp));
+    
+   
+    // for(int i=0;i!=sizeof(robo_inf.Receive_Red_HP);i++)
+      
+      robo_inf.R_Hero_HP.store(robo_inf_uart_temp.R_Hero_HP);
+      robo_inf.R_Engineer_HP.store(robo_inf_uart_temp.R_Engineer_HP);
+      robo_inf.R_Infantry3_HP.store(robo_inf_uart_temp.R_Infantry3_HP);
+      robo_inf.R_Infantry4_HP.store(robo_inf_uart_temp.R_Infantry4_HP);
+      robo_inf.R_Infantry5_HP.store(robo_inf_uart_temp.R_Infantry5_HP);
+      robo_inf.R_Sentry_HP.store(robo_inf_uart_temp.R_Sentry_HP);
+      robo_inf.R_Outpost_HP.store(robo_inf_uart_temp.R_Outpost_HP);
+      robo_inf.R_Base_HP.store(robo_inf_uart_temp.R_Base_HP);
+    
+      
+      robo_inf.B_Hero_HP.store(robo_inf_uart_temp.B_Hero_HP);
+      robo_inf.B_Hero_HP.store(robo_inf_uart_temp.B_Hero_HP);
+      robo_inf.B_Engineer_HP.store(robo_inf_uart_temp.B_Engineer_HP);
+      robo_inf.B_Infantry3_HP.store(robo_inf_uart_temp.B_Infantry3_HP);
+      robo_inf.B_Infantry4_HP.store(robo_inf_uart_temp.B_Infantry4_HP);
+      robo_inf.B_Infantry5_HP.store(robo_inf_uart_temp.B_Infantry5_HP);
+      robo_inf.B_Sentry_HP.store(robo_inf_uart_temp.B_Sentry_HP);
+      robo_inf.B_Outpost_HP.store(robo_inf_uart_temp.B_Outpost_HP);
+      robo_inf.B_Base_HP.store(robo_inf_uart_temp.B_Base_HP);
+
+    
+    std::cout<<"R_Hero_HP:"<<robo_inf.R_Hero_HP<<std::endl;
+    std::cout<<"R_Engineer_HP:"<<robo_inf.R_Engineer_HP<<std::endl;
+    // std::cout<<"????"<<std::endl;
+
     // return robo_inf_uart_temp;
   }
 

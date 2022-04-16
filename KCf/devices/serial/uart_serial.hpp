@@ -227,19 +227,19 @@ namespace uart
    * @details 或者返回陀螺仪 Yaw 加速度
    * @return float
    */
-    inline float returnReceiveAcceleration() { return receive_data_.acceleration; }
+    // inline float returnReceiveAcceleration() { return receive_data_.acceleration; }
     /**
    * @brief 返回子弹速度
    * 
    * @return int 
    */
-    inline int returnReceiveBulletVelocity() { return receive_data_.bullet_velocity; }
+    // inline int returnReceiveBulletVelocity() { return receive_data_.bullet_velocity; }
     /**
    * @brief 返回机器人 ID
    * 
    * @return int 
    */
-    inline int returnReceiveRobotId() { return receive_data_.my_robot_id; }
+    // inline int returnReceiveRobotId() { return receive_data_.my_robot_id; }
     /**
    * @brief 返回自身颜色
    * 
@@ -251,19 +251,19 @@ namespace uart
    * 
    * @return int 
    */
-    inline int returnReceiveMode() { return receive_data_.now_run_mode; }
+    // inline int returnReceiveMode() { return receive_data_.now_run_mode; }
     /**
    * @brief 返回陀螺仪 Pitch 轴数据
    * 
    * @return float 
    */
-    inline float returnReceivePitch() { return receive_data_.Receive_Pitch_Angle_Info.pitch_angle; }
+    // inline float returnReceivePitch() { return receive_data_.Receive_Pitch_Angle_Info.pitch_angle; }
     /**
    * @brief 返回陀螺仪 Yaw 轴数据
    * 
    * @return float 
    */
-    inline float returnReceiveYaw() { return receive_data_.Receive_Yaw_Angle_Info.yaw_angle; }
+    // inline float returnReceiveYaw() { return receive_data_.Receive_Yaw_Angle_Info.yaw_angle; }
     /**
    * @brief 返回高八位数据
    * 
