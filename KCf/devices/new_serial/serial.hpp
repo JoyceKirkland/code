@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2022-03-28 21:18:32
- * @LastEditTime: 2022-04-16 21:09:21
+ * @LastEditTime: 2022-04-16 21:45:19
  * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /code/KCf/devices/new_serial/serial.hpp
@@ -83,6 +83,10 @@ class RoboSerial : public serial::Serial {
     
     std::cout<<"R_Hero_HP:"<<robo_inf.R_Hero_HP<<std::endl;
     std::cout<<"R_Engineer_HP:"<<robo_inf.R_Engineer_HP<<std::endl;
+    std::cout<<"R_Infantry3_HP:"<<robo_inf.R_Infantry3_HP<<std::endl;
+    std::cout<<"R_Infantry4_HP:"<<robo_inf.R_Infantry4_HP<<std::endl;
+    std::cout<<"R_Infantry5_HP:"<<robo_inf.R_Infantry5_HP<<std::endl;
+
     // std::cout<<"????"<<std::endl;
 
     // return robo_inf_uart_temp;

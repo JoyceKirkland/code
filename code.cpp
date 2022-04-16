@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-11-18 11:00:18
- * @LastEditTime: 2022-04-16 17:11:19
+ * @LastEditTime: 2022-04-16 21:48:31
  * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /code/code.cpp
@@ -46,8 +46,8 @@
 #include "KCf/angle_solve/basic_pnp.hpp"
 #include "math.h"
 // #include "KCf/camera/mv_video_capture.hpp"
-#include "KCf/devices/new_serial/serial.hpp"
-// #include "KCf/devices/serial/uart_serial.hpp"
+// #include "KCf/devices/new_serial/serial.hpp"
+#include "KCf/devices/serial/uart_serial.hpp"
 using namespace std;
 using namespace cv;
 static bool debug = true;
@@ -441,69 +441,39 @@ Mat runCamera(mindvision::VideoCapture* mv_capture_,
         // }
 // }
 
-void uartReadThread(const std::shared_ptr<RoboSerial> &serial,
-                    RoboInf &robo_inf) {
-      
-
-  while (true) try {
-      if(serial->isOpen()){
-           cout<<"open:"<<serial->isOpen()<<endl;
-        cout<<robo_inf.B_Base_HP<<endl;
-        // cout<<serial->getBytesize()<<endl;
-        serial->ReceiveInfo(robo_inf);
-       
-      }
-    //   cout<<"open:"<<serial->isOpen()<<endl;
-      std::this_thread::sleep_for(1ms);
-    } catch (const std::exception &e) {
-      static int serial_read_excepted_times{0};
-      if (serial_read_excepted_times++ > 3) {
-        std::this_thread::sleep_for(10000ms);
-        fmt::print("[{}] read serial excepted to many times, sleep 10s.\n",
-                   idntifier_red);
-        serial_read_excepted_times = 0;
-      }
-      fmt::print("[{}] serial exception: {}\n",
-                 idntifier_red, e.what());
-      std::this_thread::sleep_for(1000ms);
-     
-    }
-    
-}
-
 void drawMap(cv::Mat frame,cv::Mat rm_map,int count_num)
 {
     cvui::image(frame, 20, 20, rm_map);
     rectangle(rm_map,Rect(37,260,40,210),Scalar(0,255,0),2);//敌方飞坡区域
     rectangle(rm_map,Rect(82,310,42,50),Scalar(0,255,0),2);//敌方大能量机关击打区域
-    // rectangle(rm_map,Rect(390,20,42,50),Scalar(0,255,0),2);//敌方飞镖区域
-    // circle(rm_map,Point(410,90),18,Scalar(255,0,0),-1);
+    rectangle(rm_map,Rect(390,20,42,50),Scalar(0,255,0),2);//敌方飞镖区域
+    circle(rm_map,Point(410,90),18,Scalar(255,0,0),-1);
     circle(rm_map,Point(150,340),18,Scalar(255,0,0),-1);
     circle(rm_map,Point(92,480),18,Scalar(255,0,0),-1);
-    // cvui::printf(frame, 695, 830, 1.3, 0xFFFFFF, "Red:");//红方各兵种、模块血量，蓝方下同
-    // cvui::printf(frame, 695, 870, 0.9, 0xFFFFFF, "R1:");//英雄
-    // cvui::printf(frame, 695, 900, 0.9, 0xFFFFFF, "R2:");//工程
-    // cvui::printf(frame, 695, 930, 0.9, 0xFFFFFF, "R3:");//步兵3
-    // cvui::printf(frame, 695, 960, 0.9, 0xFFFFFF, "R4:");//步兵4
-    // cvui::printf(frame, 695, 990, 0.9, 0xFFFFFF, "R5:");//步兵5
-    // cvui::printf(frame, 695, 1020, 0.9, 0xFFFFFF, "R7:");//哨兵
-    // cvui::printf(frame, 695, 1050, 0.9, 0xFFFFFF, "R6:");//无人机
-    // cvui::printf(frame, 695, 1080, 0.9, 0xFFFFFF, "---------");
-    // cvui::printf(frame, 695, 1110, 0.9, 0xFFFFFF, "RO:");//前哨站
-    // cvui::printf(frame, 695, 1140, 0.9, 0xFFFFFF, "RB:");//基地
+    cvui::printf(frame, 695, 830, 1.3, 0xFFFFFF, "Red:");//红方各兵种、模块血量，蓝方下同
+    cvui::printf(frame, 695, 870, 0.9, 0xFFFFFF, "R1:");//英雄
+    cvui::printf(frame, 695, 900, 0.9, 0xFFFFFF, "R2:");//工程
+    cvui::printf(frame, 695, 930, 0.9, 0xFFFFFF, "R3:");//步兵3
+    cvui::printf(frame, 695, 960, 0.9, 0xFFFFFF, "R4:");//步兵4
+    cvui::printf(frame, 695, 990, 0.9, 0xFFFFFF, "R5:");//步兵5
+    cvui::printf(frame, 695, 1020, 0.9, 0xFFFFFF, "R7:");//哨兵
+    cvui::printf(frame, 695, 1050, 0.9, 0xFFFFFF, "R6:");//无人机
+    cvui::printf(frame, 695, 1080, 0.9, 0xFFFFFF, "---------");
+    cvui::printf(frame, 695, 1110, 0.9, 0xFFFFFF, "RO:");//前哨站
+    cvui::printf(frame, 695, 1140, 0.9, 0xFFFFFF, "RB:");//基地
 
-    // //______________________________________________
-    // cvui::printf(frame, 1080, 830, 1.3, 0xFFFFFF, "Blue:");
-    // cvui::printf(frame, 1080, 870, 0.9, 0xFFFFFF, "B1:");
-    // cvui::printf(frame, 1080, 900, 0.9, 0xFFFFFF, "B2:");
-    // cvui::printf(frame, 1080, 930, 0.9, 0xFFFFFF, "B3:");
-    // cvui::printf(frame, 1080, 960, 0.9, 0xFFFFFF, "B4:");
-    // cvui::printf(frame, 1080, 990, 0.9, 0xFFFFFF, "B5:");
-    // cvui::printf(frame, 1080, 1020, 0.9, 0xFFFFFF, "B7:");
-    // cvui::printf(frame, 1080, 1050, 0.9, 0xFFFFFF, "B6:");
-    // cvui::printf(frame, 1080, 1080, 0.9, 0xFFFFFF, "---------");
-    // cvui::printf(frame, 1080, 1110, 0.9, 0xFFFFFF, "BO:");
-    // cvui::printf(frame, 1080, 1140, 0.9, 0xFFFFFF, "BB:");
+    //______________________________________________
+    cvui::printf(frame, 1080, 830, 1.3, 0xFFFFFF, "Blue:");
+    cvui::printf(frame, 1080, 870, 0.9, 0xFFFFFF, "B1:");
+    cvui::printf(frame, 1080, 900, 0.9, 0xFFFFFF, "B2:");
+    cvui::printf(frame, 1080, 930, 0.9, 0xFFFFFF, "B3:");
+    cvui::printf(frame, 1080, 960, 0.9, 0xFFFFFF, "B4:");
+    cvui::printf(frame, 1080, 990, 0.9, 0xFFFFFF, "B5:");
+    cvui::printf(frame, 1080, 1020, 0.9, 0xFFFFFF, "B7:");
+    cvui::printf(frame, 1080, 1050, 0.9, 0xFFFFFF, "B6:");
+    cvui::printf(frame, 1080, 1080, 0.9, 0xFFFFFF, "---------");
+    cvui::printf(frame, 1080, 1110, 0.9, 0xFFFFFF, "BO:");
+    cvui::printf(frame, 1080, 1140, 0.9, 0xFFFFFF, "BB:");
 }
 void warning_Lights(cv::Mat rm_map,int count_num,int x,int y)
 {
@@ -546,35 +516,30 @@ std::string getCurrentTimeStr()
 int main () 
 {
 	// VideoCapture capture("/home/joyce/视频/闸门闪烁/闸门闪烁6.gif");
-    RoboInf robo_inf;
 
     // auto streamer_ptr = std::make_shared<nadjieb::MJPEGStreamer>();
     // streamer_ptr->start(8080);
 
-    auto serial = std::make_shared<RoboSerial>("/dev/ttyUSB0", 115200);
-    // cout<<"???"<<endl;
-    std::thread uart_read_thread(uartReadThread, serial, std::ref(robo_inf));
-    uart_read_thread.detach();
-    // cout<<"open:"<<serial->isOpen()<<endl;
-    
-    // cout<<"robo_inf:color:"<<robo_inf.my_color<<endl;
-    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Red_HP.R_Hero_HP<<endl;
-    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Red_HP.R_Engineer_HP<<endl;
-    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Red_HP.R_Infantry3_HP<<endl;
-    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Red_HP.R_Infantry4_HP<<endl;
-    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Red_HP.R_Infantry5_HP<<endl;
-    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Red_HP.R_Outpost_HP<<endl;
-    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Red_HP.R_Sentry_HP<<endl;
-    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Red_HP.R_Base_HP<<endl;
 
-    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Blue_HP.B_Hero_HP<<endl;
-    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Blue_HP.B_Engineer_HP<<endl;
-    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Blue_HP.B_Infantry3_HP<<endl;
-    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Blue_HP.B_Infantry4_HP<<endl;
-    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Blue_HP.B_Infantry5_HP<<endl;
-    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Blue_HP.B_Outpost_HP<<endl;
-    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Blue_HP.B_Sentry_HP<<endl;
-    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Blue_HP.B_Base_HP<<endl;
+
+    // cout<<"robo_inf:color:"<<robo_inf.my_color<<endl;
+    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.R_Hero_HP<<endl;
+    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.R_Engineer_HP<<endl;
+    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.R_Infantry3_HP<<endl;
+    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.R_Infantry4_HP<<endl;
+    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.R_Infantry5_HP<<endl;
+    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.R_Outpost_HP<<endl;
+    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.R_Sentry_HP<<endl;
+    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.R_Base_HP<<endl;
+
+    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.B_Hero_HP<<endl;
+    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.B_Engineer_HP<<endl;
+    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.B_Infantry3_HP<<endl;
+    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.B_Infantry4_HP<<endl;
+    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.B_Infantry5_HP<<endl;
+    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.B_Outpost_HP<<endl;
+    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.B_Sentry_HP<<endl;
+    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.B_Base_HP<<endl;
 
     //————————————————————————————————————————————————————
     int change=1;
@@ -600,7 +565,7 @@ int main ()
     //——————————————————————————————————
     TRTModule model("/home/joyce/workplace/rm/2022/code/KCf/asset/model-opt-3.onnx");
 
-    // uart::SerialPort serial_ = uart::SerialPort("/home/joyce/workplace/rm/2022/KCf/configs/serial/uart_serial_config.xml");
+    uart::SerialPort serial_ = uart::SerialPort("/home/joyce/workplace/rm/2022/KCf/configs/serial/uart_serial_config.xml");
 
     basic_pnp::PnP pnp_ = basic_pnp::PnP("/home/joyce/workplace/rm/2022/KCf/configs/camera/mv_camera_config_555.xml", 
                                          "/home/joyce/workplace/rm/2022/KCf/configs/angle_solve/basic_pnp_config.xml");
@@ -613,7 +578,7 @@ int main ()
     mindvision::CameraParam(0, mindvision::RESOLUTION_1280_X_800, mindvision::EXPOSURE_10000),1);
     cv::VideoCapture cap_1 = cv::VideoCapture(1);
 
-
+    
 
     Mat background,foreground,foreground_BW;
     Mat mid_filer;   //中值滤波法后的照片
@@ -726,7 +691,7 @@ int main ()
             count_num=count_num+1;
             // cv::imshow("0", img);
             darts_roi=img(Rect((img.cols/2)-20,(img.rows/2)-20,140,140));
-	    	// rectangle(img, Rect((img.cols/2)-20,(img.rows/2)-20,140,140), Scalar(255, 255, 0), 2);	//在原图像上画出矩形
+	    	rectangle(img, Rect((img.cols/2)-20,(img.rows/2)-20,140,140), Scalar(255, 255, 0), 2);	//在原图像上画出矩形
 		    GaussianBlur(darts_roi, darts_roi, Size(5, 5), 1, 1);	
             // imshow("darts_roi",darts_roi);  
 	        cvtColor( darts_roi,mid_filer, COLOR_RGB2GRAY );
@@ -781,7 +746,7 @@ int main ()
             #if RECORD == 1
                 vw.write(img);
             #endif
-            // imshow("0",img);
+            imshow("0",img);
             //--------------------------------------------
             std::array<double, 4> q;
             double timestamp = 0.0;
@@ -909,7 +874,7 @@ int main ()
             // std::cout <<"serial_is:" <<serial_.isEmpty() << std::endl;
             // std::cout <<"serial:" <<serial_.returnReceiceColor() << std::endl;
             if(cv::waitKey(1) == 'q') {
-                uart_read_thread.~thread();
+                // uart_read_thread.~thread();
                 break;
             }
         }
