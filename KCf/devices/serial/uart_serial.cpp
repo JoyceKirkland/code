@@ -323,7 +323,7 @@ void SerialPort::updateReceiveInformation() {
   // }
 
   
-  }
+  // }
 
   // receive_data_.bullet_velocity = receive_buff_[14] - 2;
 
