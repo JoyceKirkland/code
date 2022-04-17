@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-11-18 11:00:18
- * @LastEditTime: 2022-04-16 21:48:31
+ * @LastEditTime: 2022-04-17 16:56:56
  * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /code/code.cpp
@@ -46,8 +46,8 @@
 #include "KCf/angle_solve/basic_pnp.hpp"
 #include "math.h"
 // #include "KCf/camera/mv_video_capture.hpp"
-// #include "KCf/devices/new_serial/serial.hpp"
-#include "KCf/devices/serial/uart_serial.hpp"
+#include "KCf/devices/new_serial/serial.hpp"
+// #include "KCf/devices/serial/uart_serial.hpp"
 using namespace std;
 using namespace cv;
 static bool debug = true;
@@ -440,6 +440,108 @@ Mat runCamera(mindvision::VideoCapture* mv_capture_,
             
         // }
 // }
+RoboInf out_robo_inf;
+struct HP_information
+{
+  int R_Hero_HP = 0;
+  int R_Engineer_HP = 0;
+  int R_Infantry3_HP = 0;
+  int R_Infantry4_HP = 0;
+  int R_Infantry5_HP = 0;
+  int R_Sentry_HP = 0;
+  int R_Outpost_HP = 0;
+  int R_Base_HP = 0;
+  int B_Hero_HP = 0;
+  int B_Engineer_HP = 0;
+  int B_Infantry3_HP = 0;
+  int B_Infantry4_HP = 0;
+  int B_Infantry5_HP = 0;
+  int B_Sentry_HP = 0;
+  int B_Outpost_HP = 0;
+  int B_Base_HP = 0;
+}HP_info;
+
+void output_HP()
+{
+    HP_info.R_Hero_HP=out_robo_inf.R_Hero_HP.load();
+    HP_info.R_Engineer_HP=out_robo_inf.R_Engineer_HP.load();
+    HP_info.R_Infantry3_HP=out_robo_inf.R_Infantry3_HP.load();
+    HP_info.R_Infantry4_HP=out_robo_inf.R_Infantry4_HP.load();
+    HP_info.R_Infantry5_HP=out_robo_inf.R_Infantry5_HP.load();
+    HP_info.R_Sentry_HP=out_robo_inf.R_Sentry_HP.load();
+    HP_info.R_Outpost_HP=out_robo_inf.R_Outpost_HP.load();
+    HP_info.R_Base_HP=out_robo_inf.R_Base_HP.load();
+
+    HP_info.B_Hero_HP=out_robo_inf.B_Hero_HP.load();
+    HP_info.B_Engineer_HP=out_robo_inf.B_Engineer_HP.load();
+    HP_info.B_Infantry3_HP=out_robo_inf.B_Infantry3_HP.load();
+    HP_info.B_Infantry4_HP=out_robo_inf.B_Infantry4_HP.load();
+    HP_info.B_Infantry5_HP=out_robo_inf.B_Infantry5_HP.load();
+    HP_info.B_Sentry_HP=out_robo_inf.B_Sentry_HP.load();
+    HP_info.B_Outpost_HP=out_robo_inf.B_Outpost_HP.load();
+    HP_info.B_Base_HP=out_robo_inf.B_Base_HP.load();
+
+}
+
+void uartReadThread(const std::shared_ptr<RoboSerial> &serial,
+                    RoboInf &robo_inf) {
+  while (true) try {
+    //   cout<<"??????????/"<<endl;
+      if(serial->isOpen()) {
+        serial->ReceiveInfo(robo_inf);
+    // std::cout<<"R_Hero_HP_robo:"<<robo_inf.R_Hero_HP<<std::endl;
+    // out_robo_inf.R_Hero_HP.store(robo_inf.R_Hero_HP);
+    // std::cout<<"R_Hero_HP_output:"<<out_robo_inf.R_Hero_HP<<std::endl;
+    //   atomic<uint16_t> out_robo_inf.R_Hero_HP(robo_inf.R_Hero_HP.load());
+      out_robo_inf.R_Hero_HP.store(robo_inf.R_Hero_HP);
+      out_robo_inf.R_Engineer_HP.store(robo_inf.R_Engineer_HP);
+      out_robo_inf.R_Infantry3_HP.store(robo_inf.R_Infantry3_HP);
+      out_robo_inf.R_Infantry4_HP.store(robo_inf.R_Infantry4_HP);
+      out_robo_inf.R_Infantry5_HP.store(robo_inf.R_Infantry5_HP);
+      out_robo_inf.R_Sentry_HP.store(robo_inf.R_Sentry_HP);
+      out_robo_inf.R_Outpost_HP.store(robo_inf.R_Outpost_HP);
+      out_robo_inf.R_Base_HP.store(robo_inf.R_Base_HP);
+      
+      out_robo_inf.B_Hero_HP.store(robo_inf.B_Hero_HP);
+      out_robo_inf.B_Engineer_HP.store(robo_inf.B_Engineer_HP);
+      out_robo_inf.B_Infantry3_HP.store(robo_inf.B_Infantry3_HP);
+      out_robo_inf.B_Infantry4_HP.store(robo_inf.B_Infantry4_HP);
+      out_robo_inf.B_Infantry5_HP.store(robo_inf.B_Infantry5_HP);
+      out_robo_inf.B_Sentry_HP.store(robo_inf.B_Sentry_HP);
+      out_robo_inf.B_Outpost_HP.store(robo_inf.B_Outpost_HP);
+      out_robo_inf.B_Base_HP.store(robo_inf.B_Base_HP);
+      
+    // std::cout<<"R_Engineer_HP:"<<out_robo_inf.R_Engineer_HP<<std::endl;
+    // std::cout<<"R_Infantry3_HP:"<<out_robo_inf.R_Infantry3_HP<<std::endl;
+    // std::cout<<"R_Infantry4_HP:"<<out_robo_inf.R_Infantry4_HP<<std::endl;
+    // std::cout<<"R_Infantry5_HP:"<<out_robo_inf.R_Infantry5_HP<<std::endl;
+    // std::cout<<"R_Infantry5_HP:"<<out_robo_inf.R_Sentry_HP<<std::endl;
+    // std::cout<<"R_Outpost_HP:"<<out_robo_inf.R_Outpost_HP<<std::endl;
+    // std::cout<<"R_Base_HP:"<<out_robo_inf.R_Base_HP<<std::endl;
+
+    // std::cout<<"B_Hero_HP:"<<out_robo_inf.B_Hero_HP<<std::endl;
+    // std::cout<<"B_Engineer_HP:"<<out_robo_inf.B_Engineer_HP<<std::endl;
+    // std::cout<<"B_Infantry3_HP:"<<out_robo_inf.B_Infantry3_HP<<std::endl;
+    // std::cout<<"B_Infantry4_HP:"<<out_robo_inf.B_Infantry4_HP<<std::endl;
+    // std::cout<<"B_Infantry5_HP:"<<out_robo_inf.B_Infantry5_HP<<std::endl;
+    // std::cout<<"B_Sentry_HP:"<<out_robo_inf.B_Sentry_HP<<std::endl;
+    // std::cout<<"B_Outpost_HP:"<<out_robo_inf.B_Outpost_HP<<std::endl;
+    // std::cout<<"B_Base_HP:"<<out_robo_inf.B_Base_HP<<std::endl;
+      }
+      std::this_thread::sleep_for(1ms);
+    } catch (const std::exception &e) {
+      static int serial_read_excepted_times{0};
+      if (serial_read_excepted_times++ > 3) {
+        std::this_thread::sleep_for(10000ms);
+        fmt::print("[{}] read serial excepted to many times, sleep 10s.\n",
+                   idntifier_red);
+        serial_read_excepted_times = 0;
+      }
+      fmt::print("[{}] serial exception: {}\n",
+                 idntifier_red, e.what());
+      std::this_thread::sleep_for(1000ms);
+    }
+}
 
 void drawMap(cv::Mat frame,cv::Mat rm_map,int count_num)
 {
@@ -450,30 +552,31 @@ void drawMap(cv::Mat frame,cv::Mat rm_map,int count_num)
     circle(rm_map,Point(410,90),18,Scalar(255,0,0),-1);
     circle(rm_map,Point(150,340),18,Scalar(255,0,0),-1);
     circle(rm_map,Point(92,480),18,Scalar(255,0,0),-1);
+    
+    // int r_Hero_HP=out_robo_inf.R_Hero_HP.load();
+    output_HP();
     cvui::printf(frame, 695, 830, 1.3, 0xFFFFFF, "Red:");//红方各兵种、模块血量，蓝方下同
-    cvui::printf(frame, 695, 870, 0.9, 0xFFFFFF, "R1:");//英雄
-    cvui::printf(frame, 695, 900, 0.9, 0xFFFFFF, "R2:");//工程
-    cvui::printf(frame, 695, 930, 0.9, 0xFFFFFF, "R3:");//步兵3
-    cvui::printf(frame, 695, 960, 0.9, 0xFFFFFF, "R4:");//步兵4
-    cvui::printf(frame, 695, 990, 0.9, 0xFFFFFF, "R5:");//步兵5
-    cvui::printf(frame, 695, 1020, 0.9, 0xFFFFFF, "R7:");//哨兵
-    cvui::printf(frame, 695, 1050, 0.9, 0xFFFFFF, "R6:");//无人机
+    cvui::printf(frame, 695, 870, 0.9, 0xFFFFFF, "R1:%d",HP_info.R_Hero_HP);//英雄
+    cvui::printf(frame, 695, 900, 0.9, 0xFFFFFF, "R2:%d",HP_info.R_Engineer_HP);//工程
+    cvui::printf(frame, 695, 930, 0.9, 0xFFFFFF, "R3:%d",HP_info.R_Infantry3_HP);//步兵3
+    cvui::printf(frame, 695, 960, 0.9, 0xFFFFFF, "R4:%d",HP_info.R_Infantry4_HP);//步兵4
+    cvui::printf(frame, 695, 990, 0.9, 0xFFFFFF, "R5:%d",HP_info.R_Infantry5_HP);//步兵5
+    cvui::printf(frame, 695, 1020, 0.9, 0xFFFFFF, "R7:%d",HP_info.R_Sentry_HP);//哨兵
     cvui::printf(frame, 695, 1080, 0.9, 0xFFFFFF, "---------");
-    cvui::printf(frame, 695, 1110, 0.9, 0xFFFFFF, "RO:");//前哨站
-    cvui::printf(frame, 695, 1140, 0.9, 0xFFFFFF, "RB:");//基地
+    cvui::printf(frame, 695, 1110, 0.9, 0xFFFFFF, "RO:%d",HP_info.R_Outpost_HP);//前哨站
+    cvui::printf(frame, 695, 1140, 0.9, 0xFFFFFF, "RB:%d",HP_info.R_Base_HP);//基地
 
     //______________________________________________
     cvui::printf(frame, 1080, 830, 1.3, 0xFFFFFF, "Blue:");
-    cvui::printf(frame, 1080, 870, 0.9, 0xFFFFFF, "B1:");
-    cvui::printf(frame, 1080, 900, 0.9, 0xFFFFFF, "B2:");
-    cvui::printf(frame, 1080, 930, 0.9, 0xFFFFFF, "B3:");
-    cvui::printf(frame, 1080, 960, 0.9, 0xFFFFFF, "B4:");
-    cvui::printf(frame, 1080, 990, 0.9, 0xFFFFFF, "B5:");
-    cvui::printf(frame, 1080, 1020, 0.9, 0xFFFFFF, "B7:");
-    cvui::printf(frame, 1080, 1050, 0.9, 0xFFFFFF, "B6:");
+    cvui::printf(frame, 1080, 870, 0.9, 0xFFFFFF, "B1:%d",HP_info.B_Hero_HP);
+    cvui::printf(frame, 1080, 900, 0.9, 0xFFFFFF, "B2:%d",HP_info.B_Engineer_HP);
+    cvui::printf(frame, 1080, 930, 0.9, 0xFFFFFF, "B3:%d",HP_info.B_Infantry3_HP);
+    cvui::printf(frame, 1080, 960, 0.9, 0xFFFFFF, "B4:%d",HP_info.B_Infantry4_HP);
+    cvui::printf(frame, 1080, 990, 0.9, 0xFFFFFF, "B5:%d",HP_info.B_Infantry5_HP);
+    cvui::printf(frame, 1080, 1020, 0.9, 0xFFFFFF, "B7:%d",HP_info.B_Sentry_HP);
     cvui::printf(frame, 1080, 1080, 0.9, 0xFFFFFF, "---------");
-    cvui::printf(frame, 1080, 1110, 0.9, 0xFFFFFF, "BO:");
-    cvui::printf(frame, 1080, 1140, 0.9, 0xFFFFFF, "BB:");
+    cvui::printf(frame, 1080, 1110, 0.9, 0xFFFFFF, "BO:%d",HP_info.B_Outpost_HP);
+    cvui::printf(frame, 1080, 1140, 0.9, 0xFFFFFF, "BB:%d",HP_info.B_Base_HP);
 }
 void warning_Lights(cv::Mat rm_map,int count_num,int x,int y)
 {
@@ -516,30 +619,34 @@ std::string getCurrentTimeStr()
 int main () 
 {
 	// VideoCapture capture("/home/joyce/视频/闸门闪烁/闸门闪烁6.gif");
-
+    RoboInf robo_inf;
+    // RoboInf out_robo_inf;
     // auto streamer_ptr = std::make_shared<nadjieb::MJPEGStreamer>();
     // streamer_ptr->start(8080);
+    auto serial = std::make_shared<RoboSerial>("/dev/ttyUSB0", 115200);
 
+    std::thread uart_read_thread(uartReadThread, serial, std::ref(robo_inf));
+    uart_read_thread.detach();
 
+    // cout<<"??????????????????????????????/"<<endl;
 
-    // cout<<"robo_inf:color:"<<robo_inf.my_color<<endl;
-    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.R_Hero_HP<<endl;
-    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.R_Engineer_HP<<endl;
-    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.R_Infantry3_HP<<endl;
-    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.R_Infantry4_HP<<endl;
-    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.R_Infantry5_HP<<endl;
-    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.R_Outpost_HP<<endl;
-    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.R_Sentry_HP<<endl;
-    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.R_Base_HP<<endl;
+    // std::cout<<"R_Hero_HP:"<<robo_inf.R_Hero_HP<<std::endl;
+    // std::cout<<"R_Engineer_HP:"<<robo_inf.R_Engineer_HP<<std::endl;
+    // std::cout<<"R_Infantry3_HP:"<<robo_inf.R_Infantry3_HP<<std::endl;
+    // std::cout<<"R_Infantry4_HP:"<<robo_inf.R_Infantry4_HP<<std::endl;
+    // std::cout<<"R_Infantry5_HP:"<<robo_inf.R_Infantry5_HP<<std::endl;
+    // std::cout<<"R_Infantry5_HP:"<<robo_inf.R_Sentry_HP<<std::endl;
+    // std::cout<<"R_Outpost_HP:"<<robo_inf.R_Outpost_HP<<std::endl;
+    // std::cout<<"R_Base_HP:"<<robo_inf.R_Base_HP<<std::endl;
 
-    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.B_Hero_HP<<endl;
-    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.B_Engineer_HP<<endl;
-    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.B_Infantry3_HP<<endl;
-    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.B_Infantry4_HP<<endl;
-    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.B_Infantry5_HP<<endl;
-    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.B_Outpost_HP<<endl;
-    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.B_Sentry_HP<<endl;
-    // cout<<"robo_inf:reds:"<<robo_inf.Receive_Information.B_Base_HP<<endl;
+    // std::cout<<"B_Hero_HP:"<<robo_inf.B_Hero_HP<<std::endl;
+    // std::cout<<"B_Engineer_HP:"<<robo_inf.B_Engineer_HP<<std::endl;
+    // std::cout<<"B_Infantry3_HP:"<<robo_inf.B_Infantry3_HP<<std::endl;
+    // std::cout<<"B_Infantry4_HP:"<<robo_inf.B_Infantry4_HP<<std::endl;
+    // std::cout<<"B_Infantry5_HP:"<<robo_inf.B_Infantry5_HP<<std::endl;
+    // std::cout<<"B_Sentry_HP:"<<robo_inf.B_Sentry_HP<<std::endl;
+    // std::cout<<"B_Outpost_HP:"<<robo_inf.B_Outpost_HP<<std::endl;
+    // std::cout<<"B_Base_HP:"<<robo_inf.B_Base_HP<<std::endl;
 
     //————————————————————————————————————————————————————
     int change=1;
@@ -565,7 +672,7 @@ int main ()
     //——————————————————————————————————
     TRTModule model("/home/joyce/workplace/rm/2022/code/KCf/asset/model-opt-3.onnx");
 
-    uart::SerialPort serial_ = uart::SerialPort("/home/joyce/workplace/rm/2022/KCf/configs/serial/uart_serial_config.xml");
+    // uart::SerialPort serial_ = uart::SerialPort("/home/joyce/workplace/rm/2022/KCf/configs/serial/uart_serial_config.xml");
 
     basic_pnp::PnP pnp_ = basic_pnp::PnP("/home/joyce/workplace/rm/2022/KCf/configs/camera/mv_camera_config_555.xml", 
                                          "/home/joyce/workplace/rm/2022/KCf/configs/angle_solve/basic_pnp_config.xml");
@@ -874,7 +981,7 @@ int main ()
             // std::cout <<"serial_is:" <<serial_.isEmpty() << std::endl;
             // std::cout <<"serial:" <<serial_.returnReceiceColor() << std::endl;
             if(cv::waitKey(1) == 'q') {
-                // uart_read_thread.~thread();
+                uart_read_thread.~thread();
                 break;
             }
         }

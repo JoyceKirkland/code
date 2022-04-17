@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2022-03-28 21:18:32
- * @LastEditTime: 2022-04-16 21:45:19
+ * @LastEditTime: 2022-04-17 14:44:38
  * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /code/KCf/devices/new_serial/serial.hpp
@@ -39,14 +39,14 @@ class RoboSerial : public serial::Serial {
   }
 
   void ReceiveInfo(RoboInf &robo_inf) {
-    //  std::cout<<"????"<<std::endl;
+     std::cout<<"????"<<std::endl;
     RoboInfUartBuff robo_inf_uart_temp;
     uint8_t temp;
     this->read(&temp, 1);
     
-    while (temp != 'c'){
+    while (temp != 'S'){
       this->read(&temp, 1);
-      std::cout<<"temp_:"<<(int8_t)temp<<std::endl;
+      // std::cout<<"temp_:"<<(int8_t)temp<<std::endl;
 
     // std::cout<<"???????????????????"<<std::endl;
 
@@ -71,7 +71,6 @@ class RoboSerial : public serial::Serial {
     
       
       robo_inf.B_Hero_HP.store(robo_inf_uart_temp.B_Hero_HP);
-      robo_inf.B_Hero_HP.store(robo_inf_uart_temp.B_Hero_HP);
       robo_inf.B_Engineer_HP.store(robo_inf_uart_temp.B_Engineer_HP);
       robo_inf.B_Infantry3_HP.store(robo_inf_uart_temp.B_Infantry3_HP);
       robo_inf.B_Infantry4_HP.store(robo_inf_uart_temp.B_Infantry4_HP);
@@ -81,11 +80,24 @@ class RoboSerial : public serial::Serial {
       robo_inf.B_Base_HP.store(robo_inf_uart_temp.B_Base_HP);
 
     
-    std::cout<<"R_Hero_HP:"<<robo_inf.R_Hero_HP<<std::endl;
-    std::cout<<"R_Engineer_HP:"<<robo_inf.R_Engineer_HP<<std::endl;
-    std::cout<<"R_Infantry3_HP:"<<robo_inf.R_Infantry3_HP<<std::endl;
-    std::cout<<"R_Infantry4_HP:"<<robo_inf.R_Infantry4_HP<<std::endl;
-    std::cout<<"R_Infantry5_HP:"<<robo_inf.R_Infantry5_HP<<std::endl;
+    // std::cout<<"R_Hero_HP:"<<robo_inf.R_Hero_HP<<std::endl;
+    // std::cout<<"R_Engineer_HP:"<<robo_inf.R_Engineer_HP<<std::endl;
+    // std::cout<<"R_Infantry3_HP:"<<robo_inf.R_Infantry3_HP<<std::endl;
+    // std::cout<<"R_Infantry4_HP:"<<robo_inf.R_Infantry4_HP<<std::endl;
+    // std::cout<<"R_Infantry5_HP:"<<robo_inf.R_Infantry5_HP<<std::endl;
+    // std::cout<<"R_Infantry5_HP:"<<robo_inf.R_Sentry_HP<<std::endl;
+    // std::cout<<"R_Outpost_HP:"<<robo_inf.R_Outpost_HP<<std::endl;
+    // std::cout<<"R_Base_HP:"<<robo_inf.R_Base_HP<<std::endl;
+
+    // std::cout<<"B_Hero_HP:"<<robo_inf.B_Hero_HP<<std::endl;
+    // std::cout<<"B_Engineer_HP:"<<robo_inf.B_Engineer_HP<<std::endl;
+    // std::cout<<"B_Infantry3_HP:"<<robo_inf.B_Infantry3_HP<<std::endl;
+    // std::cout<<"B_Infantry4_HP:"<<robo_inf.B_Infantry4_HP<<std::endl;
+    // std::cout<<"B_Infantry5_HP:"<<robo_inf.B_Infantry5_HP<<std::endl;
+    // std::cout<<"B_Sentry_HP:"<<robo_inf.B_Sentry_HP<<std::endl;
+    // std::cout<<"B_Outpost_HP:"<<robo_inf.B_Outpost_HP<<std::endl;
+    // std::cout<<"B_Base_HP:"<<robo_inf.B_Base_HP<<std::endl;
+
 
     // std::cout<<"????"<<std::endl;
 

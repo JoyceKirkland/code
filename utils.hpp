@@ -29,47 +29,65 @@ struct RoboInf {
   // uint8_t my_color = 0;
 //  union Receive_Information
     // {
-      std::atomic<uint16_t> R_Hero_HP=0;
-      std::atomic<uint16_t> R_Engineer_HP=0;
-      std::atomic<uint16_t> R_Infantry3_HP=0;
-      std::atomic<uint16_t> R_Infantry4_HP=0;
-      std::atomic<uint16_t> R_Infantry5_HP=0;
-      std::atomic<uint16_t> R_Sentry_HP=0;
-      std::atomic<uint16_t> R_Outpost_HP=0;
-      std::atomic<uint16_t> R_Base_HP=0;
+      // std::atomic<uint16_t> R_Hero_HP=0;
+      // std::atomic<uint16_t> R_Engineer_HP=0;
+      // std::atomic<uint16_t> R_Infantry3_HP=0;
+      // std::atomic<uint16_t> R_Infantry4_HP=0;
+      // std::atomic<uint16_t> R_Infantry5_HP=0;
+      // std::atomic<uint16_t> R_Sentry_HP=0;
+      // std::atomic<uint16_t> R_Outpost_HP=0;
+      // std::atomic<uint16_t> R_Base_HP=0;
     
-      std::atomic<uint16_t> B_Hero_HP=0;
-      std::atomic<uint16_t> B_Engineer_HP=0;
-      std::atomic<uint16_t> B_Infantry3_HP=0;
-      std::atomic<uint16_t> B_Infantry4_HP=0;
-      std::atomic<uint16_t> B_Infantry5_HP=0;
-      std::atomic<uint16_t> B_Sentry_HP=0;
-      std::atomic<uint16_t> B_Outpost_HP=0;
-      std::atomic<uint16_t> B_Base_HP=0;
+      // std::atomic<uint16_t> B_Hero_HP=0;
+      // std::atomic<uint16_t> B_Engineer_HP=0;
+      // std::atomic<uint16_t> B_Infantry3_HP=0;
+      // std::atomic<uint16_t> B_Infantry4_HP=0;
+      // std::atomic<uint16_t> B_Infantry5_HP=0;
+      // std::atomic<uint16_t> B_Sentry_HP=0;
+      // std::atomic<uint16_t> B_Outpost_HP=0;
+      // std::atomic<uint16_t> B_Base_HP=0;
+
+      std::atomic<uint16_t> R_Hero_HP;
+      std::atomic<uint16_t> R_Engineer_HP;
+      std::atomic<uint16_t> R_Infantry3_HP;
+      std::atomic<uint16_t> R_Infantry4_HP;
+      std::atomic<uint16_t> R_Infantry5_HP;
+      std::atomic<uint16_t> R_Sentry_HP;
+      std::atomic<uint16_t> R_Outpost_HP;
+      std::atomic<uint16_t> R_Base_HP;
+    
+      std::atomic<uint16_t> B_Hero_HP;
+      std::atomic<uint16_t> B_Engineer_HP;
+      std::atomic<uint16_t> B_Infantry3_HP;
+      std::atomic<uint16_t> B_Infantry4_HP;
+      std::atomic<uint16_t> B_Infantry5_HP;
+      std::atomic<uint16_t> B_Sentry_HP;
+      std::atomic<uint16_t> B_Outpost_HP;
+      std::atomic<uint16_t> B_Base_HP;
     // } 
     // Receive_Information;
-    // RoboInf()
-    // {
-    //   // my_color = 0;
-    //   Receive_Information.R_Hero_HP = 0;
-    //   Receive_Information.R_Engineer_HP = 0;
-    //   Receive_Information.R_Infantry3_HP = 0;
-    //   Receive_Information.R_Infantry4_HP = 0;
-    //   Receive_Information.R_Infantry5_HP = 0;
-    //   Receive_Information.R_Sentry_HP = 0;
-    //   Receive_Information.R_Outpost_HP = 0;
-    //   Receive_Information.R_Base_HP = 0;
+    
+    RoboInf()
+    {
+      // my_color = 0;
+      R_Hero_HP = 0;
+      R_Engineer_HP = 0;
+      R_Infantry3_HP = 0;
+      R_Infantry4_HP = 0;
+      R_Infantry5_HP = 0;
+      R_Sentry_HP = 0;
+      R_Outpost_HP = 0;
+      R_Base_HP = 0;
+      B_Hero_HP = 0;
+      B_Engineer_HP = 0;
+      B_Infantry3_HP = 0;
+      B_Infantry4_HP = 0;
+      B_Infantry5_HP = 0;
+      B_Sentry_HP = 0;
+      B_Outpost_HP = 0;
+      B_Base_HP = 0;
 
-    //   Receive_Information.B_Hero_HP = 0;
-    //   Receive_Information.B_Engineer_HP = 0;
-    //   Receive_Information.B_Infantry3_HP = 0;
-    //   Receive_Information.B_Infantry4_HP = 0;
-    //   Receive_Information.B_Infantry5_HP = 0;
-    //   Receive_Information.B_Sentry_HP = 0;
-    //   Receive_Information.B_Outpost_HP = 0;
-    //   Receive_Information.B_Base_HP = 0;
-
-    // }
+    }
 };
 
 struct RoboInfUartBuff {
