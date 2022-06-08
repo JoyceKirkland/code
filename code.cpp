@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2021-11-18 11:00:18
- * @LastEditTime: 2022-04-17 17:07:43
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-06-08 16:58:14
+ * @LastEditors: JoyceKirkland joyce84739879@163.com
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /code/code.cpp
  */
@@ -556,51 +556,51 @@ void drawMap(cv::Mat frame,cv::Mat rm_map,int count_num)
     // int r_Hero_HP=out_robo_inf.R_Hero_HP.load();
     output_HP();
     cvui::printf(frame, 695, 830, 1.3, 0xFFFFFF, "Red:");//红方各兵种、模块血量，蓝方下同
-    cvui::printf(frame, 695, 870, 0.9, 0xFFFFFF, "R1:%d",HP_info.R_Hero_HP);//英雄
-    cvui::printf(frame, 695, 900, 0.9, 0xFFFFFF, "R2:%d",HP_info.R_Engineer_HP);//工程
-    cvui::printf(frame, 695, 930, 0.9, 0xFFFFFF, "R3:%d",HP_info.R_Infantry3_HP);//步兵3
-    cvui::printf(frame, 695, 960, 0.9, 0xFFFFFF, "R4:%d",HP_info.R_Infantry4_HP);//步兵4
-    cvui::printf(frame, 695, 990, 0.9, 0xFFFFFF, "R5:%d",HP_info.R_Infantry5_HP);//步兵5
-    cvui::printf(frame, 695, 1020, 0.9, 0xFFFFFF, "R7:%d",HP_info.R_Sentry_HP);//哨兵
+    cvui::printf(frame, 695, 870, 0.9, 0xFFFFFF, "R1:%d/500",HP_info.R_Hero_HP);//英雄
+    cvui::printf(frame, 695, 900, 0.9, 0xFFFFFF, "R2:%d/500",HP_info.R_Engineer_HP);//工程
+    cvui::printf(frame, 695, 930, 0.9, 0xFFFFFF, "R3:%d/500",HP_info.R_Infantry3_HP);//步兵3
+    cvui::printf(frame, 695, 960, 0.9, 0xFFFFFF, "R4:%d/500",HP_info.R_Infantry4_HP);//步兵4
+    cvui::printf(frame, 695, 990, 0.9, 0xFFFFFF, "R5:%d/500",HP_info.R_Infantry5_HP);//步兵5
+    cvui::printf(frame, 695, 1020, 0.9, 0xFFFFFF, "R7:%d/600",HP_info.R_Sentry_HP);//哨兵
     cvui::printf(frame, 695, 1080, 0.9, 0xFFFFFF, "---------");
-    cvui::printf(frame, 695, 1110, 0.9, 0xFFFFFF, "RO:%d",HP_info.R_Outpost_HP);//前哨站
-    cvui::printf(frame, 695, 1140, 0.9, 0xFFFFFF, "RB:%d",HP_info.R_Base_HP);//基地
+    cvui::printf(frame, 695, 1110, 0.9, 0xFFFFFF, "RO:%d/1500",HP_info.R_Outpost_HP);//前哨站
+    cvui::printf(frame, 695, 1140, 0.9, 0xFFFFFF, "RB:%d/5000",HP_info.R_Base_HP);//基地
 
     //______________________________________________
     cvui::printf(frame, 1080, 830, 1.3, 0xFFFFFF, "Blue:");
-    cvui::printf(frame, 1080, 870, 0.9, 0xFFFFFF, "B1:%d",HP_info.B_Hero_HP);
-    cvui::printf(frame, 1080, 900, 0.9, 0xFFFFFF, "B2:%d",HP_info.B_Engineer_HP);
-    cvui::printf(frame, 1080, 930, 0.9, 0xFFFFFF, "B3:%d",HP_info.B_Infantry3_HP);
-    cvui::printf(frame, 1080, 960, 0.9, 0xFFFFFF, "B4:%d",HP_info.B_Infantry4_HP);
-    cvui::printf(frame, 1080, 990, 0.9, 0xFFFFFF, "B5:%d",HP_info.B_Infantry5_HP);
-    cvui::printf(frame, 1080, 1020, 0.9, 0xFFFFFF, "B7:%d",HP_info.B_Sentry_HP);
+    cvui::printf(frame, 1080, 870, 0.9, 0xFFFFFF, "B1:%d/500",HP_info.B_Hero_HP);
+    cvui::printf(frame, 1080, 900, 0.9, 0xFFFFFF, "B2:%d/500",HP_info.B_Engineer_HP);
+    cvui::printf(frame, 1080, 930, 0.9, 0xFFFFFF, "B3:%d/500",HP_info.B_Infantry3_HP);
+    cvui::printf(frame, 1080, 960, 0.9, 0xFFFFFF, "B4:%d/500",HP_info.B_Infantry4_HP);
+    cvui::printf(frame, 1080, 990, 0.9, 0xFFFFFF, "B5:%d/500",HP_info.B_Infantry5_HP);
+    cvui::printf(frame, 1080, 1020, 0.9, 0xFFFFFF, "B7:%d/600",HP_info.B_Sentry_HP);
     cvui::printf(frame, 1080, 1080, 0.9, 0xFFFFFF, "---------");
-    cvui::printf(frame, 1080, 1110, 0.9, 0xFFFFFF, "BO:%d",HP_info.B_Outpost_HP);
-    cvui::printf(frame, 1080, 1140, 0.9, 0xFFFFFF, "BB:%d",HP_info.B_Base_HP);
+    cvui::printf(frame, 1080, 1110, 0.9, 0xFFFFFF, "BO:%d/1500",HP_info.B_Outpost_HP);
+    cvui::printf(frame, 1080, 1140, 0.9, 0xFFFFFF, "BB:%d/5000",HP_info.B_Base_HP);
 }
-void warning_Lights(cv::Mat rm_map,int count_num,int x,int y)
-{
-    // circle(rm_map,Point(x,y),18,Scalar(255,0,0),-1);
-    if((sin((count_num*3.1415926)*16/180))>0)//||(sin((count_num*3.1415926*0.5)/180))<-0.5
-    {
-        circle(rm_map,Point(x,y),18,Scalar(255,0,0),-1);
-        // sleep(1);
-    }
-    else {
-        circle(rm_map,Point(x,y),18,Scalar(0,0,255),-1);
-        // count_num = 2;
-    }
-}
-bool fly_or_engery(int point_x,int point_y,cv::Rect rect)
-{
-    if(point_x>rect.x&&point_x<rect.x+rect.width&&point_y>rect.y&&point_y<rect.y+rect.height)
-    {
-        return true;
-    }else
-    {
-        return false;
-    }
-}
+// void warning_Lights(cv::Mat rm_map,int count_num,int x,int y)
+// {
+//     // circle(rm_map,Point(x,y),18,Scalar(255,0,0),-1);
+//     if((sin((count_num*3.1415926)*16/180))>0)//||(sin((count_num*3.1415926*0.5)/180))<-0.5
+//     {
+//         circle(rm_map,Point(x,y),18,Scalar(255,0,0),-1);
+//         // sleep(1);
+//     }
+//     else {
+//         circle(rm_map,Point(x,y),18,Scalar(0,0,255),-1);
+//         // count_num = 2;
+//     }
+// }
+// bool fly_or_engery(int point_x,int point_y,cv::Rect rect)
+// {
+//     if(point_x>rect.x&&point_x<rect.x+rect.width&&point_y>rect.y&&point_y<rect.y+rect.height)
+//     {
+//         return true;
+//     }else
+//     {
+//         return false;
+//     }
+// }
 std::string getCurrentTimeStr()
 {
   time_t t = time(NULL);
@@ -678,11 +678,11 @@ int main ()
                                          "/home/joyce/workplace/rm/2022/KCf/configs/angle_solve/basic_pnp_config.xml");
 
     mindvision::VideoCapture* mv_capture_ = new mindvision::VideoCapture(
-    mindvision::CameraParam(0, mindvision::RESOLUTION_1280_X_800, mindvision::EXPOSURE_10000),0);
+    mindvision::CameraParam(0, mindvision::RESOLUTION_1280_X_800, mindvision::EXPOSURE_20000),0);
     cv::VideoCapture cap_ = cv::VideoCapture(0);
 
     mindvision::VideoCapture* mv_capture_1 = new mindvision::VideoCapture(
-    mindvision::CameraParam(0, mindvision::RESOLUTION_1280_X_800, mindvision::EXPOSURE_10000),1);
+    mindvision::CameraParam(0, mindvision::RESOLUTION_1280_X_800, mindvision::EXPOSURE_20000),1);
     cv::VideoCapture cap_1 = cv::VideoCapture(1);
 
     
@@ -690,15 +690,15 @@ int main ()
     Mat background,foreground,foreground_BW;
     Mat mid_filer;   //中值滤波法后的照片
     Mat frame_0;
-    Mat rm_map_bule=imread("/home/joyce/workplace/rm/2022/code/rm-map-bule.png");
-    Mat rm_map_red=imread("/home/joyce/workplace/rm/2022/code/rm-map-red.png");
-    Mat rm_map;
+    // Mat rm_map_bule=imread("/home/joyce/workplace/rm/2022/code/rm-map-bule.png");
+    // Mat rm_map_red=imread("/home/joyce/workplace/rm/2022/code/rm-map-red.png");
+    Mat result;
     int count_num=0;
     // static int count_num=0;
 
     ROI roi;
     // cap_.set(cv::CAP_PROP_FRAME_WIDTH, 1280);
-	// cap_.set(cv::CAP_PROP_FRAME_HEIGHT, 800);
+	// cap_.set(cv::CAP_P ROP_FRAME_HEIGHT, 800);
     // cap_.set(cv::CAP_PROP_AUTO_EXPOSURE,1);
     // cap_.set(cv::CAP_PROP_EXPOSURE, 800);
 
@@ -708,7 +708,7 @@ int main ()
 	cv::Mat img;//装甲板
     cv::Mat img1;//飞镖
     cv::Mat darts_roi;
-    cv::Mat frame = cv::Mat(1200, 2000, CV_8UC3);
+    // cv::Mat frame = cv::Mat(900, 1500, CV_8UC3);
 
     const cv::Scalar colors[4] = {{255, 0, 0}, {0, 0, 255}, {0, 255, 0}, {255, 255, 255}};
 
@@ -722,13 +722,15 @@ int main ()
     float forecast_dist;
     int compensate_w;
     std::vector<cv::Point2f> target_2d;
+    std::vector<cv::Mat> imgs;
     Mat element = getStructuringElement(MORPH_RECT,Size(9,9));
    	// namedWindow("Radar picture",WINDOW_NORMAL);
     // setWindowProperty("Radar picture", WND_PROP_FULLSCREEN, WINDOW_FULLSCREEN);    
     // cvui::image(frame, 20, 20, rm_map_bule);
             // cv::imshow("map", rm_map_bule);
 
-    cv::namedWindow(WINDOW_NAME);
+    cv::namedWindow(WINDOW_NAME,WINDOW_NORMAL);
+    
 	cvui::init(WINDOW_NAME);
 
     while (true) 
@@ -736,7 +738,7 @@ int main ()
 
 		// 记录起始的时钟周期数
         double time = (double)getTickCount();
-        frame = cv::Scalar(49, 52, 49);
+        // frame = cv::Scalar(49, 52, 49);
         // armor(mv_capture_,img,cap_,
         //         serial_,colors,
         //         pnp_, yaw_angle, last_yaw_angle, enemy_robot_v,
@@ -768,24 +770,24 @@ int main ()
         ) 
         {
             //_______________地图阵营选择，默认我方颜色在下方__________________//
-            if(change_map==1)//地图阵营切换
-            {
-                rm_map=rm_map_red;
-                drawMap(frame,rm_map,count_num);
+            // if(change_map==1)//地图阵营切换
+            // {
+            //     rm_map=rm_map_red;
+            //     drawMap(frame,rm_map,count_num);
                 
-            }else if(change_map==2)
-            {
-                rm_map=rm_map_bule;
-                drawMap(frame,rm_map,count_num);
-            }
-            if (cvui::button(frame, 20, 1100, "red",1)) //我方阵营选择按钮：红方
-            {
-                change_map=1;
-		    }
-            if (cvui::button(frame, 180, 1100, "blue",1)) //我方阵营选择按钮：蓝方
-            {
-                change_map=2;
-		    }
+            // }else if(change_map==2)
+            // {
+            //     rm_map=rm_map_bule;
+            //     drawMap(frame,rm_map,count_num);
+            // }
+            // if (cvui::button(frame, 20, 1100, "red",1)) //我方阵营选择按钮：红方
+            // {
+            //     change_map=1;
+		    // }
+            // if (cvui::button(frame, 180, 1100, "blue",1)) //我方阵营选择按钮：蓝方
+            // {
+            //     change_map=2;
+		    // }
             //______________________________视频录制______________________________//
             #if SLOPE_FLYING_RECORD == 1
                 vw.write(img);
@@ -834,7 +836,7 @@ int main ()
 	    		if(mu[i].m00<1300)//范围需要调整
 	    		{
 	    			rectangle(darts_roi, rect, Scalar(0, 255, 0), 3);	//在原图像上画出矩形
-                    warning_Lights(rm_map,count_num,410,90);
+                    // warning_Lights(rm_map,count_num,410,90);
                     // if((sin((count_num*3.1415926)*8/180))>0)//||(sin((count_num*3.1415926*0.5)/180))<-0.5
                     // {
                     //     circle(rm_map,Point(410,90),18,Scalar(255,0,0),-1);
@@ -844,8 +846,8 @@ int main ()
                     //     circle(rm_map,Point(410,90),18,Scalar(0,0,255),-1);
                     //     // count_num = 2;
                     // }	    		
-                }else{
-                    drawMap(frame,rm_map,count_num);
+                // }else{
+                    // drawMap(frame,rm_map,count_num);
                 }
 	        }
             frame_0=mid_filer.clone();
@@ -853,7 +855,7 @@ int main ()
             #if RECORD == 1
                 vw.write(img);
             #endif
-            imshow("0",img);
+            // imshow("0",img);
             //--------------------------------------------
             std::array<double, 4> q;
             double timestamp = 0.0;
@@ -885,18 +887,18 @@ int main ()
                     armor.img_center_dist = getDistance((detections[i].pts[0] + detections[i].pts[3]) * 0.5, cv::Point(img1.cols * 0.5, img1.rows * 0.5 + 100));
                     //  && detections[i].tag_id != 2 
                     // cout<<"point:("<<detections[i].pts[0]<<","<<detections[i].pts[1]<<")"<<endl;
-                    for(int j=0;j<4;j++)
-                    {
-                        if(fly_or_engery(detections[i].pts[j].x,detections[i].pts[j].y,rect_fly))//装甲板是否出现在飞坡区域
-                        {
-                            warning_Lights(rm_map,count_num,92,480);
-                        }
-                        if(fly_or_engery(detections[i].pts[j].x,detections[i].pts[j].y,rect_energy))//装甲板是否出现在能量机关击打区域
-                        {
-                            warning_Lights(rm_map,count_num,150,340);
-                        }
+                    // for(int j=0;j<4;j++)
+                    // {
+                    //     if(fly_or_engery(detections[i].pts[j].x,detections[i].pts[j].y,rect_fly))//装甲板是否出现在飞坡区域
+                    //     {
+                    //         warning_Lights(rm_map,count_num,92,480);
+                    //     }
+                    //     if(fly_or_engery(detections[i].pts[j].x,detections[i].pts[j].y,rect_energy))//装甲板是否出现在能量机关击打区域
+                    //     {
+                    //         warning_Lights(rm_map,count_num,150,340);
+                    //     }
 
-                    }
+                    // }
                     // if (serial_.returnReceiceColor() != detections[i].color_id && detections[i].confidence > 0.5 ) 
                     // {
                     //     data_armor.push_back(armor);
@@ -911,7 +913,7 @@ int main ()
             rectangle(img1,rect_fly,Scalar(0,255,0),2);//敌方飞坡区域
             rectangle(img1,rect_energy,Scalar(0,255,0),2);//敌方大能量机关击打区域
             
-            drawMap(frame,rm_map,count_num);
+            // drawMap(frame,rm_map,count_num);
             
             // // fps_count++;
             time = ((double)getTickCount() - time) / getTickFrequency();
@@ -938,29 +940,29 @@ int main ()
             //     change_map=2;
 		    // }
             //__________________________________________________
-            if(change==1)//主视频源视角切换
+            // if(change==1)//主视频源视角切换
             {
-                cvui::image(frame, 700, 20, img);
+                // cvui::image(frame, 180, 20, img);
                 // putText(img,"飞镖",Point(100,250),FONT_HERSHEY_PLAIN,4.0,Scalar(0,255,255),2);            
             }
-            else if(change==2)
+            // else if(change==2)
             {
-                cvui::image(frame, 700, 20, img1);
+                // cvui::image(frame, 180, 20, img1);
             }
-            if (cvui::button(frame, 1780, 850, "darts",1.2)) //飞镖视角按钮
+            // if (cvui::button(frame, 1780, 850, "darts",1.2)) //飞镖视角按钮
             {
-                change=1;
+                // change=1;
                 // cvui::image(frame, 700, 20, img);
 		    }
-            if (cvui::button(frame, 1780, 950, "feipo",1.2)) //飞坡视角按钮
+            // if (cvui::button(frame, 1780, 950, "feipo",1.2)) //飞坡视角按钮
             {
-                change=2;
+                // change=2;
                 // cvui::image(frame, 700, 20, img1);
 		    }
 
-            if (cvui::button(frame, 1780, 1050, "exit",1.2)) 
+            // if (cvui::button(frame, 1780, 850, "exit",1.2)) 
             {
-                break;
+                // break;
 		    }
             // cout<<"???"<<endl;
             //_______________________________
@@ -976,8 +978,16 @@ int main ()
             // cvui::printf(frame, 695, 1110, 0.9, 0xFFFFFF, "RO:");
             // cvui::printf(frame, 695, 1140, 0.9, 0xFFFFFF, "RB:");
             //_______________________________
-            cvui::update();
-		    cv::imshow(WINDOW_NAME, frame);
+            // cvui::update();
+            
+            
+            //拼接__________________________//
+            // imgs.push_back(img);
+            // imgs.push_back(img1);
+            hconcat(img,img1,result);
+            // imshow("0",img);
+            // imshow("1",img1);
+		    cv::imshow(WINDOW_NAME, result);
             // std::cout <<"serial_is:" <<serial_.isEmpty() << std::endl;
             // std::cout <<"serial:" <<serial_.returnReceiceColor() << std::endl;
             if(cv::waitKey(1) == 'q') {
