@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-11-18 11:00:18
- * @LastEditTime: 2022-06-08 16:58:14
+ * @LastEditTime: 2022-06-08 17:08:39
  * @LastEditors: JoyceKirkland joyce84739879@163.com
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /code/code.cpp
@@ -722,7 +722,6 @@ int main ()
     float forecast_dist;
     int compensate_w;
     std::vector<cv::Point2f> target_2d;
-    std::vector<cv::Mat> imgs;
     Mat element = getStructuringElement(MORPH_RECT,Size(9,9));
    	// namedWindow("Radar picture",WINDOW_NORMAL);
     // setWindowProperty("Radar picture", WND_PROP_FULLSCREEN, WINDOW_FULLSCREEN);    
