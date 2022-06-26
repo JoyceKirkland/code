@@ -29,11 +29,10 @@ class RoboSerial : public serial::Serial {
   }
 
   void WriteInfo(RoboCmd &robo_cmd) {
+    std::cout<<"write"<<std::endl;
     RoboCmdUartBuff robo_cmd_uart_temp;
-    robo_cmd_uart_temp.yaw_angle = robo_cmd.yaw_angle.load();
-    robo_cmd_uart_temp.pitch_angle = robo_cmd.pitch_angle.load();
-    robo_cmd_uart_temp.depth = robo_cmd.depth.load();
-    robo_cmd_uart_temp.detect_object = robo_cmd.detect_object.load();
+    robo_cmd_uart_temp.is_left = robo_cmd.is_left.load();
+    robo_cmd_uart_temp.turn_angle = robo_cmd.turn_angle.load();
 
     this->write((uint8_t *)&robo_cmd_uart_temp, sizeof(robo_cmd_uart_temp));
   }

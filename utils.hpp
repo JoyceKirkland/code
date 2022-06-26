@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2022-03-29 15:10:42
- * @LastEditTime: 2022-04-15 21:47:40
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-06-26 16:05:30
+ * @LastEditors: JoyceKirkland joyce84739879@163.com
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /code/utils.hpp
  */
@@ -10,19 +10,16 @@
 #include <atomic>
 
 struct RoboCmd {
-  std::atomic<float> yaw_angle = 0.f;
-  std::atomic<float> pitch_angle = 0.f;
-  std::atomic<float> depth = 0.f;
-  std::atomic<uint8_t> detect_object = false;
+  std::atomic<uint8_t> is_left = 1;
+  std::atomic<float> turn_angle = 0.f;
 };
 
 struct RoboCmdUartBuff{
   uint8_t start = (unsigned)'S';
-  float yaw_angle;
-  float pitch_angle;
-  float depth;
-  uint8_t detect_object;
+  uint8_t   is_left;//是否往哨兵轨道左移
+  float   turn_angle;//转头角度
   uint8_t end = (unsigned)'E';
+
 } __attribute__((packed));
 
 struct RoboInf {

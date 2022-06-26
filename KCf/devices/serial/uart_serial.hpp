@@ -118,6 +118,16 @@ namespace uart
   //     Receive_Pitch_Angle_Info.pitch_angle = 0.f;
   //   }
   // };
+struct Write_Data {
+  int   is_left;//是否往哨兵轨道左移
+  float   turn_angle;//转头角度
+
+  Write_Data() {
+    is_left   = 1;
+    turn_angle = 0.f;
+  }
+};
+
 
   struct Receive_Data
   {
@@ -175,28 +185,13 @@ namespace uart
   // Serial port message sending structure
   struct Write_Data
   {
-    int symbol_yaw;
-    int symbol_pitch;
-    int depth;
-
-    // Whether the robot shold shoot, 1 for shoot for 1 ball, otherwises 0
-    int is_shooting;
-
-    // Whether the target is found, 1 for found, otherwise 0
-    int data_type;
-
-    float yaw_angle;
-    float pitch_angle;
+    int is_left;
+    float turn_angle;
 
     Write_Data()
     {
-      symbol_yaw = 0;
-      symbol_pitch = 0;
-      depth = 0;
-      is_shooting = 0;
-      data_type = 0;
-      yaw_angle = 0.f;
-      pitch_angle = 0.f;
+      is_left = 1;
+      turn_angle = 0.f;
     }
   };
 

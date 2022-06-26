@@ -173,118 +173,119 @@ void SerialPort::writeData(const int&     _yaw,
   }
 }
 
-void SerialPort::writeData(const Write_Data& _write_data) {
-  write_data_.data_type    = _write_data.data_type > 1 ? 1 : _write_data.data_type;
-  write_data_.is_shooting  = _write_data.is_shooting;
-  write_data_.symbol_yaw   = _write_data.yaw_angle >= 0 ? 1 : 0;
-  write_data_.yaw_angle    = fabs(_write_data.yaw_angle) * 100;
-  write_data_.symbol_pitch = _write_data.pitch_angle >= 0 ? 1 : 0;
-  write_data_.pitch_angle  = fabs(_write_data.pitch_angle) * 100;
-  write_data_.depth        = _write_data.depth;
+// void SerialPort::writeData(const Write_Data& _write_data) {
+//   // write_data_.data_type    = _write_data.data_type > 1 ? 1 : _write_data.data_type;
+//   write_data_.is_left  = _write_data.is_left;
+//   // write_data_.yaw_angle    = fabs(_write_data.yaw_angle) * 100;
+//   // write_data_.symbol_pitch = _write_data.pitch_angle >= 0 ? 1 : 0;
+//   // write_data_.pitch_angle  = fabs(_write_data.pitch_angle) * 100;
+//   write_data_.turn_angle        = _write_data.turn_angle;
 
-  writeData(write_data_.symbol_yaw,
-            write_data_.yaw_angle,
-            write_data_.symbol_pitch,
-            write_data_.pitch_angle,
-            write_data_.depth,
-            write_data_.data_type,
-            write_data_.is_shooting);
-}
+//   writeData(
+//             // write_data_.symbol_yaw,
+//             // write_data_.yaw_angle,
+//             // write_data_.symbol_pitch,
+//             // write_data_.pitch_angle,
+//             // write_data_.depth,
+//             write_data_.is_left,
+//             write_data_.turn_angle);
+// }
 
-void SerialPort::writeData() {
-  writeData(write_data_.symbol_yaw,
-            write_data_.yaw_angle,
-            write_data_.symbol_pitch,
-            write_data_.pitch_angle,
-            write_data_.depth,
-            write_data_.data_type,
-            write_data_.is_shooting);
-}
+// void SerialPort::writeData() {
+//   writeData(
+//     // write_data_.symbol_yaw,
+//             // write_data_.yaw_angle,
+//             // write_data_.symbol_pitch,
+//             // write_data_.pitch_angle,
+//             // write_data_.depth,
+//             write_data_.is_left,
+//             write_data_.turn_angle);
+// }
 
-void SerialPort::updataWriteData(const float _yaw,
-                                 const float _pitch,
-                                 const int   _depth,
-                                 const int   _data_type,
-                                 const int   _is_shooting) {
-  write_data_.data_type    = _data_type > 1 ? 1 : _data_type;
-  write_data_.is_shooting  = _is_shooting;
-  write_data_.symbol_yaw   = _yaw >= 0 ? 1 : 0;
-  write_data_.yaw_angle    = fabs(_yaw) * 100;
-  write_data_.symbol_pitch = _pitch >= 0 ? 1 : 0;
-  write_data_.pitch_angle  = fabs(_pitch) * 100;
-  write_data_.depth        = _depth;
+// void SerialPort::updataWriteData(const float _yaw,
+//                                  const float _pitch,
+//                                  const int   _depth,
+//                                  const int   _data_type,
+//                                  const int   _is_shooting) {
+//   write_data_.data_type    = _data_type > 1 ? 1 : _data_type;
+//   write_data_.is_shooting  = _is_shooting;
+//   write_data_.symbol_yaw   = _yaw >= 0 ? 1 : 0;
+//   write_data_.yaw_angle    = fabs(_yaw) * 100;
+//   write_data_.symbol_pitch = _pitch >= 0 ? 1 : 0;
+//   write_data_.pitch_angle  = fabs(_pitch) * 100;
+//   write_data_.depth        = _depth;
 
-  writeData();
-}
+//   writeData();
+// }
 
-Write_Data SerialPort::gainWriteData(const float _yaw,
-                                     const float _pitch,
-                                     const int   _depth,
-                                     const int   _data_type,
-                                     const int   _is_shooting) {
-  Write_Data write_data;
+// Write_Data SerialPort::gainWriteData(const float _yaw,
+//                                      const float _pitch,
+//                                      const int   _depth,
+//                                      const int   _data_type,
+//                                      const int   _is_shooting) {
+//   Write_Data write_data;
 
-  write_data.data_type    = _data_type > 1 ? 1 : _data_type;
-  write_data.is_shooting  = _is_shooting;
-  write_data.symbol_yaw   = _yaw >= 0 ? 1 : 0;
-  write_data.yaw_angle    = fabs(_yaw) * 100;
-  write_data.symbol_pitch = _pitch >= 0 ? 1 : 0;
-  write_data.pitch_angle  = fabs(_pitch) * 100;
-  write_data.depth        = _depth;
+//   write_data.data_type    = _data_type > 1 ? 1 : _data_type;
+//   write_data.is_shooting  = _is_shooting;
+//   write_data.symbol_yaw   = _yaw >= 0 ? 1 : 0;
+//   write_data.yaw_angle    = fabs(_yaw) * 100;
+//   write_data.symbol_pitch = _pitch >= 0 ? 1 : 0;
+//   write_data.pitch_angle  = fabs(_pitch) * 100;
+//   write_data.depth        = _depth;
 
-  return write_data;
-}
+//   return write_data;
+// }
 
-uint8_t SerialPort::checksumCRC(unsigned char* buf, uint16_t len) {
-  uint8_t check = 0;
+// uint8_t SerialPort::checksumCRC(unsigned char* buf, uint16_t len) {
+//   uint8_t check = 0;
 
-  while (len--) { check = CRC8_Table[check ^ (*buf++)]; }
+//   while (len--) { check = CRC8_Table[check ^ (*buf++)]; }
 
-  return check;
-}
+//   return check;
+// }
 
-void SerialPort::getDataForCRC(const int&     data_type,
-                               const int&     is_shooting,
-                               const int&     _yaw,
-                               const int16_t& yaw,
-                               const int&     _pitch,
-                               const int16_t& pitch,
-                               const int16_t& depth) {
-  crc_buff_[0]  = 0x53;
-  crc_buff_[1]  = static_cast<unsigned char>(data_type);
-  crc_buff_[2]  = static_cast<unsigned char>(is_shooting);
-  crc_buff_[3]  = static_cast<unsigned char>(_yaw);
-  crc_buff_[4]  = returnLowBit(yaw);
-  crc_buff_[5]  = returnHighBit(yaw);
-  crc_buff_[6]  = static_cast<unsigned char>(_pitch);
-  crc_buff_[7]  = returnLowBit(pitch);
-  crc_buff_[8]  = returnHighBit(pitch);
-  crc_buff_[9]  = returnLowBit(depth);
-  crc_buff_[10] = returnHighBit(depth);
-}
+// void SerialPort::getDataForCRC(const int&     data_type,
+//                                const int&     is_shooting,
+//                                const int&     _yaw,
+//                                const int16_t& yaw,
+//                                const int&     _pitch,
+//                                const int16_t& pitch,
+//                                const int16_t& depth) {
+//   crc_buff_[0]  = 0x53;
+//   crc_buff_[1]  = static_cast<unsigned char>(data_type);
+//   crc_buff_[2]  = static_cast<unsigned char>(is_shooting);
+//   crc_buff_[3]  = static_cast<unsigned char>(_yaw);
+//   crc_buff_[4]  = returnLowBit(yaw);
+//   crc_buff_[5]  = returnHighBit(yaw);
+//   crc_buff_[6]  = static_cast<unsigned char>(_pitch);
+//   crc_buff_[7]  = returnLowBit(pitch);
+//   crc_buff_[8]  = returnHighBit(pitch);
+//   crc_buff_[9]  = returnLowBit(depth);
+//   crc_buff_[10] = returnHighBit(depth);
+// }
 
-void SerialPort::getDataForSend(const int&     data_type,
-                                const int&     is_shooting,
-                                const int&     _yaw,
-                                const int16_t& yaw,
-                                const int&     _pitch,
-                                const int16_t& pitch,
-                                const int16_t& depth,
-                                const uint8_t& CRC) {
-  write_buff_[0]  = 0x53;
-  write_buff_[1]  = static_cast<unsigned char>(data_type);
-  write_buff_[2]  = static_cast<unsigned char>(is_shooting);
-  write_buff_[3]  = static_cast<unsigned char>(_yaw);
-  write_buff_[4]  = returnLowBit(yaw);
-  write_buff_[5]  = returnHighBit(yaw);
-  write_buff_[6]  = static_cast<unsigned char>(_pitch);
-  write_buff_[7]  = returnLowBit(pitch);
-  write_buff_[8]  = returnHighBit(pitch);
-  write_buff_[9]  = returnLowBit(depth);
-  write_buff_[10] = returnHighBit(depth);
-  write_buff_[11] = CRC & 0xff;
-  write_buff_[12] = 0x45;
-}
+// void SerialPort::getDataForSend(const int&     data_type,
+//                                 const int&     is_shooting,
+//                                 const int&     _yaw,
+//                                 const int16_t& yaw,
+//                                 const int&     _pitch,
+//                                 const int16_t& pitch,
+//                                 const int16_t& depth,
+//                                 const uint8_t& CRC) {
+//   write_buff_[0]  = 0x53;
+//   write_buff_[1]  = static_cast<unsigned char>(data_type);
+//   write_buff_[2]  = static_cast<unsigned char>(is_shooting);
+//   write_buff_[3]  = static_cast<unsigned char>(_yaw);
+//   write_buff_[4]  = returnLowBit(yaw);
+//   write_buff_[5]  = returnHighBit(yaw);
+//   write_buff_[6]  = static_cast<unsigned char>(_pitch);
+//   write_buff_[7]  = returnLowBit(pitch);
+//   write_buff_[8]  = returnHighBit(pitch);
+//   write_buff_[9]  = returnLowBit(depth);
+//   write_buff_[10] = returnHighBit(depth);
+//   write_buff_[11] = CRC & 0xff;
+//   write_buff_[12] = 0x45;
+// }
 
 bool SerialPort::isEmpty() {
   if (receive_buff_[0] != '0' || receive_buff_[REC_INFO_LENGTH - 1] != '0') {

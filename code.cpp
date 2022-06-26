@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-11-18 11:00:18
- * @LastEditTime: 2022-06-08 17:08:39
+ * @LastEditTime: 2022-06-26 17:01:53
  * @LastEditors: JoyceKirkland joyce84739879@163.com
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /code/code.cpp
@@ -38,6 +38,7 @@
 #include <opencv2/highgui.hpp>
 #include "radar/camera/mv_video_capture.hpp"
 #include "TRTModule.hpp"
+// #include <opencv4/opencv2/cvv.hpp>
 // #include <python3.8/Python.h>
 #include <fmt/format.h>
 #include <fmt/color.h>
@@ -441,6 +442,8 @@ Mat runCamera(mindvision::VideoCapture* mv_capture_,
         // }
 // }
 RoboInf out_robo_inf;
+RoboInf out_robo_cmd;
+
 struct HP_information
 {
   int R_Hero_HP = 0;
@@ -481,6 +484,33 @@ void output_HP()
     HP_info.B_Outpost_HP=out_robo_inf.B_Outpost_HP.load();
     HP_info.B_Base_HP=out_robo_inf.B_Base_HP.load();
 
+}
+
+void uartWriteThread(const std::shared_ptr<RoboSerial> &serial,
+                     RoboCmd &robo_cmd) {
+  while (true) try {
+      if(serial->isOpen()) {
+        serial->WriteInfo(robo_cmd);
+        cout<<"is_left:"<<robo_cmd.is_left<<endl;
+        cout<<"turn_angle:"<<robo_cmd.turn_angle<<endl;
+
+      } else {
+        serial->open();
+      }
+      std::this_thread::sleep_for(1ms);
+    } catch (const std::exception &e) {
+      serial->close();
+      static int serial_read_excepted_times{0};
+      if (serial_read_excepted_times++ > 3) {
+        std::this_thread::sleep_for(10000ms);
+        fmt::print("[{}] read serial excepted to many times, sleep 10s.\n",
+                   idntifier_red);
+        serial_read_excepted_times = 0;
+      }
+      fmt::print("[{}] serial exception: {}\n",
+                 idntifier_red, e.what());
+      std::this_thread::sleep_for(1000ms);
+    }
 }
 
 void uartReadThread(const std::shared_ptr<RoboSerial> &serial,
@@ -543,41 +573,41 @@ void uartReadThread(const std::shared_ptr<RoboSerial> &serial,
     }
 }
 
-void drawMap(cv::Mat frame,cv::Mat rm_map,int count_num)
-{
-    cvui::image(frame, 20, 20, rm_map);
-    rectangle(rm_map,Rect(37,260,40,210),Scalar(0,255,0),2);//敌方飞坡区域
-    rectangle(rm_map,Rect(82,310,42,50),Scalar(0,255,0),2);//敌方大能量机关击打区域
-    rectangle(rm_map,Rect(390,20,42,50),Scalar(0,255,0),2);//敌方飞镖区域
-    circle(rm_map,Point(410,90),18,Scalar(255,0,0),-1);
-    circle(rm_map,Point(150,340),18,Scalar(255,0,0),-1);
-    circle(rm_map,Point(92,480),18,Scalar(255,0,0),-1);
+// void drawMap(cv::Mat frame,cv::Mat rm_map,int count_num)
+// {
+//     cvui::image(frame, 20, 20, rm_map);
+//     rectangle(rm_map,Rect(37,260,40,210),Scalar(0,255,0),2);//敌方飞坡区域
+//     rectangle(rm_map,Rect(82,310,42,50),Scalar(0,255,0),2);//敌方大能量机关击打区域
+//     rectangle(rm_map,Rect(390,20,42,50),Scalar(0,255,0),2);//敌方飞镖区域
+//     circle(rm_map,Point(410,90),18,Scalar(255,0,0),-1);
+//     circle(rm_map,Point(150,340),18,Scalar(255,0,0),-1);
+//     circle(rm_map,Point(92,480),18,Scalar(255,0,0),-1);
     
-    // int r_Hero_HP=out_robo_inf.R_Hero_HP.load();
-    output_HP();
-    cvui::printf(frame, 695, 830, 1.3, 0xFFFFFF, "Red:");//红方各兵种、模块血量，蓝方下同
-    cvui::printf(frame, 695, 870, 0.9, 0xFFFFFF, "R1:%d/500",HP_info.R_Hero_HP);//英雄
-    cvui::printf(frame, 695, 900, 0.9, 0xFFFFFF, "R2:%d/500",HP_info.R_Engineer_HP);//工程
-    cvui::printf(frame, 695, 930, 0.9, 0xFFFFFF, "R3:%d/500",HP_info.R_Infantry3_HP);//步兵3
-    cvui::printf(frame, 695, 960, 0.9, 0xFFFFFF, "R4:%d/500",HP_info.R_Infantry4_HP);//步兵4
-    cvui::printf(frame, 695, 990, 0.9, 0xFFFFFF, "R5:%d/500",HP_info.R_Infantry5_HP);//步兵5
-    cvui::printf(frame, 695, 1020, 0.9, 0xFFFFFF, "R7:%d/600",HP_info.R_Sentry_HP);//哨兵
-    cvui::printf(frame, 695, 1080, 0.9, 0xFFFFFF, "---------");
-    cvui::printf(frame, 695, 1110, 0.9, 0xFFFFFF, "RO:%d/1500",HP_info.R_Outpost_HP);//前哨站
-    cvui::printf(frame, 695, 1140, 0.9, 0xFFFFFF, "RB:%d/5000",HP_info.R_Base_HP);//基地
+//     // int r_Hero_HP=out_robo_inf.R_Hero_HP.load();
+//     output_HP();
+//     cvui::printf(frame, 695, 830, 1.3, 0xFFFFFF, "Red:");//红方各兵种、模块血量，蓝方下同
+//     cvui::printf(frame, 695, 870, 0.9, 0xFFFFFF, "R1:%d/500",HP_info.R_Hero_HP);//英雄
+//     cvui::printf(frame, 695, 900, 0.9, 0xFFFFFF, "R2:%d/500",HP_info.R_Engineer_HP);//工程
+//     cvui::printf(frame, 695, 930, 0.9, 0xFFFFFF, "R3:%d/500",HP_info.R_Infantry3_HP);//步兵3
+//     cvui::printf(frame, 695, 960, 0.9, 0xFFFFFF, "R4:%d/500",HP_info.R_Infantry4_HP);//步兵4
+//     cvui::printf(frame, 695, 990, 0.9, 0xFFFFFF, "R5:%d/500",HP_info.R_Infantry5_HP);//步兵5
+//     cvui::printf(frame, 695, 1020, 0.9, 0xFFFFFF, "R7:%d/600",HP_info.R_Sentry_HP);//哨兵
+//     cvui::printf(frame, 695, 1080, 0.9, 0xFFFFFF, "---------");
+//     cvui::printf(frame, 695, 1110, 0.9, 0xFFFFFF, "RO:%d/1500",HP_info.R_Outpost_HP);//前哨站
+//     cvui::printf(frame, 695, 1140, 0.9, 0xFFFFFF, "RB:%d/5000",HP_info.R_Base_HP);//基地
 
-    //______________________________________________
-    cvui::printf(frame, 1080, 830, 1.3, 0xFFFFFF, "Blue:");
-    cvui::printf(frame, 1080, 870, 0.9, 0xFFFFFF, "B1:%d/500",HP_info.B_Hero_HP);
-    cvui::printf(frame, 1080, 900, 0.9, 0xFFFFFF, "B2:%d/500",HP_info.B_Engineer_HP);
-    cvui::printf(frame, 1080, 930, 0.9, 0xFFFFFF, "B3:%d/500",HP_info.B_Infantry3_HP);
-    cvui::printf(frame, 1080, 960, 0.9, 0xFFFFFF, "B4:%d/500",HP_info.B_Infantry4_HP);
-    cvui::printf(frame, 1080, 990, 0.9, 0xFFFFFF, "B5:%d/500",HP_info.B_Infantry5_HP);
-    cvui::printf(frame, 1080, 1020, 0.9, 0xFFFFFF, "B7:%d/600",HP_info.B_Sentry_HP);
-    cvui::printf(frame, 1080, 1080, 0.9, 0xFFFFFF, "---------");
-    cvui::printf(frame, 1080, 1110, 0.9, 0xFFFFFF, "BO:%d/1500",HP_info.B_Outpost_HP);
-    cvui::printf(frame, 1080, 1140, 0.9, 0xFFFFFF, "BB:%d/5000",HP_info.B_Base_HP);
-}
+//     //______________________________________________
+//     cvui::printf(frame, 1080, 830, 1.3, 0xFFFFFF, "Blue:");
+//     cvui::printf(frame, 1080, 870, 0.9, 0xFFFFFF, "B1:%d/500",HP_info.B_Hero_HP);
+//     cvui::printf(frame, 1080, 900, 0.9, 0xFFFFFF, "B2:%d/500",HP_info.B_Engineer_HP);
+//     cvui::printf(frame, 1080, 930, 0.9, 0xFFFFFF, "B3:%d/500",HP_info.B_Infantry3_HP);
+//     cvui::printf(frame, 1080, 960, 0.9, 0xFFFFFF, "B4:%d/500",HP_info.B_Infantry4_HP);
+//     cvui::printf(frame, 1080, 990, 0.9, 0xFFFFFF, "B5:%d/500",HP_info.B_Infantry5_HP);
+//     cvui::printf(frame, 1080, 1020, 0.9, 0xFFFFFF, "B7:%d/600",HP_info.B_Sentry_HP);
+//     cvui::printf(frame, 1080, 1080, 0.9, 0xFFFFFF, "---------");
+//     cvui::printf(frame, 1080, 1110, 0.9, 0xFFFFFF, "BO:%d/1500",HP_info.B_Outpost_HP);
+//     cvui::printf(frame, 1080, 1140, 0.9, 0xFFFFFF, "BB:%d/5000",HP_info.B_Base_HP);
+// }
 // void warning_Lights(cv::Mat rm_map,int count_num,int x,int y)
 // {
 //     // circle(rm_map,Point(x,y),18,Scalar(255,0,0),-1);
@@ -620,13 +650,17 @@ int main ()
 {
 	// VideoCapture capture("/home/joyce/视频/闸门闪烁/闸门闪烁6.gif");
     RoboInf robo_inf;
-    // RoboInf out_robo_inf;
+    RoboCmd robo_cmd;
     // auto streamer_ptr = std::make_shared<nadjieb::MJPEGStreamer>();
     // streamer_ptr->start(8080);
     auto serial = std::make_shared<RoboSerial>("/dev/ttyUSB0", 115200);
 
     std::thread uart_read_thread(uartReadThread, serial, std::ref(robo_inf));
     uart_read_thread.detach();
+
+    std::thread uart_write_thread(uartWriteThread, serial, std::ref(robo_cmd));
+    uart_write_thread.detach();
+
 
     // cout<<"??????????????????????????????/"<<endl;
 
@@ -677,16 +711,28 @@ int main ()
     basic_pnp::PnP pnp_ = basic_pnp::PnP("/home/joyce/workplace/rm/2022/KCf/configs/camera/mv_camera_config_555.xml", 
                                          "/home/joyce/workplace/rm/2022/KCf/configs/angle_solve/basic_pnp_config.xml");
 
-    mindvision::VideoCapture* mv_capture_ = new mindvision::VideoCapture(
-    mindvision::CameraParam(0, mindvision::RESOLUTION_1280_X_800, mindvision::EXPOSURE_20000),0);
-    cv::VideoCapture cap_ = cv::VideoCapture(0);
+    // mindvision::VideoCapture* mv_capture_ = new mindvision::VideoCapture(
+    // mindvision::CameraParam(0, mindvision::RESOLUTION_1280_X_800, mindvision::EXPOSURE_20000),0);
+    // cv::VideoCapture cap_ = cv::VideoCapture(0);
 
-    mindvision::VideoCapture* mv_capture_1 = new mindvision::VideoCapture(
-    mindvision::CameraParam(0, mindvision::RESOLUTION_1280_X_800, mindvision::EXPOSURE_20000),1);
-    cv::VideoCapture cap_1 = cv::VideoCapture(1);
+    // mindvision::VideoCapture* mv_capture_1 = new mindvision::VideoCapture(
+    // mindvision::CameraParam(0, mindvision::RESOLUTION_1280_X_800, mindvision::EXPOSURE_20000),1);
+    // cv::VideoCapture cap_1 = cv::VideoCapture(1);
 
+    VideoCapture cap0(0);
+    VideoCapture cap1(2);
     
+	cap0.set(CAP_PROP_FRAME_WIDTH,640);
+    cap0.set(CAP_PROP_FRAME_HEIGHT,480);
+    cap0.set(cv::CAP_PROP_AUTO_EXPOSURE, 0.25); // where 0.25 means "manual exposure, manual iris"
+    cap0.set(CAP_PROP_EXPOSURE, 50);
+    cap0.set(CAP_PROP_BRIGHTNESS,90);
 
+    cap1.set(CAP_PROP_FRAME_WIDTH,640);
+    cap1.set(CAP_PROP_FRAME_HEIGHT,480);
+    cap1.set(cv::CAP_PROP_AUTO_EXPOSURE, 0.25); // where 0.25 means "manual exposure, manual iris"
+    cap1.set(CAP_PROP_EXPOSURE, 50);
+    cap1.set(CAP_PROP_BRIGHTNESS,90);
     Mat background,foreground,foreground_BW;
     Mat mid_filer;   //中值滤波法后的照片
     Mat frame_0;
@@ -737,6 +783,8 @@ int main ()
 
 		// 记录起始的时钟周期数
         double time = (double)getTickCount();
+        cap0>>img;
+        cap1>>img1;
         // frame = cv::Scalar(49, 52, 49);
         // armor(mv_capture_,img,cap_,
         //         serial_,colors,
@@ -748,25 +796,25 @@ int main ()
         //         count_num,mid_filer,background,frame_0,foreground,
         //          foreground_BW, element);
     
-        if (
-            mv_capture_->isindustryimgInput()
-        &&
-        mv_capture_1->isindustryimgInput()
-        ) 
-        {
-            img = mv_capture_->image();
-            img1=mv_capture_1->image();
+        // if (
+        //     mv_capture_->isindustryimgInput()
+        // &&
+        // mv_capture_1->isindustryimgInput()
+        // ) 
+        // {
+        //     img = mv_capture_->image();
+        //     img1=mv_capture_1->image();
 
-        } else {
-            cap_.read(img);
-            cap_1.read(img1);
-        }
-        if (
-            (!img1.empty()
-            )
-        ||
-        (!img.empty())
-        ) 
+        // } else {
+        //     cap_.read(img);
+        //     cap_1.read(img1);
+        // }
+        // if (
+        //     (!img1.empty()
+        //     )
+        // ||
+        // (!img.empty())
+        // ) 
         {
             //_______________地图阵营选择，默认我方颜色在下方__________________//
             // if(change_map==1)//地图阵营切换
@@ -796,61 +844,62 @@ int main ()
                 vw1.write(img1);
             #endif
             //——————————————————————————————
-            count_num=count_num+1;
+            // count_num=count_num+1;
             // cv::imshow("0", img);
-            darts_roi=img(Rect((img.cols/2)-20,(img.rows/2)-20,140,140));
-	    	rectangle(img, Rect((img.cols/2)-20,(img.rows/2)-20,140,140), Scalar(255, 255, 0), 2);	//在原图像上画出矩形
-		    GaussianBlur(darts_roi, darts_roi, Size(5, 5), 1, 1);	
-            // imshow("darts_roi",darts_roi);  
-	        cvtColor( darts_roi,mid_filer, COLOR_RGB2GRAY );
 
-            if(count_num==1)
-	        {
-		        background=mid_filer.clone();
-		        frame_0=background;
-	        }
-	        else
-	        {
-		        background=frame_0; 
-	        }
-            absdiff(mid_filer,background,foreground);//用帧差法求前景
-	        threshold( foreground, foreground_BW, 120, 255 , 0 );//二值化通常设置为50  255
+            // darts_roi=img(Rect((img.cols/2)-20,(img.rows/2)-20,140,140));
+	    	// rectangle(img, Rect((img.cols/2)-20,(img.rows/2)-20,140,140), Scalar(255, 255, 0), 2);	//在原图像上画出矩形
+		    // GaussianBlur(darts_roi, darts_roi, Size(5, 5), 1, 1);	
+            // // imshow("darts_roi",darts_roi);  
+	        // cvtColor( darts_roi,mid_filer, COLOR_RGB2GRAY );
+
+            // if(count_num==1)
+	        // {
+		    //     background=mid_filer.clone();
+		    //     frame_0=background;
+	        // }
+	        // else
+	        // {
+		    //     background=frame_0; 
+	        // }
+            // absdiff(mid_filer,background,foreground);//用帧差法求前景
+	        // threshold( foreground, foreground_BW, 120, 255 , 0 );//二值化通常设置为50  255
 // 	   	    // dilate(foreground_BW,foreground_BW,element);
 
-	        vector<Vec4i> hierarchy;
-            vector<vector<Point>> contours;
-	        findContours(foreground_BW,contours,hierarchy,RETR_EXTERNAL,CHAIN_APPROX_NONE,Point());//寻找并绘制轮廓
-            // imshow("mask",foreground_BW);
+	        // vector<Vec4i> hierarchy;
+            // vector<vector<Point>> contours;
+	        // findContours(foreground_BW,contours,hierarchy,RETR_EXTERNAL,CHAIN_APPROX_NONE,Point());//寻找并绘制轮廓
+            // // imshow("mask",foreground_BW);
 
-            vector<Moments>mu(contours.size());
-            for(unsigned i=0;i<contours.size();i++)//计算轮廓面积
-            {
-                mu[i]=moments(contours[i],false);
-            }
-            for(int i=0;i<contours.size();i++)//最小外接矩形
-            {
-	    	    Rect rect = boundingRect(contours[i]);	//找出轮廓最小外界矩形
-	    		// cout << "矩形框" << rect.width << endl;
-	    		// if(mu[i].m00<2000&&mu[i].m00>125)
-	    		if(mu[i].m00<1300)//范围需要调整
-	    		{
-	    			rectangle(darts_roi, rect, Scalar(0, 255, 0), 3);	//在原图像上画出矩形
-                    // warning_Lights(rm_map,count_num,410,90);
-                    // if((sin((count_num*3.1415926)*8/180))>0)//||(sin((count_num*3.1415926*0.5)/180))<-0.5
-                    // {
-                    //     circle(rm_map,Point(410,90),18,Scalar(255,0,0),-1);
-                    //     // sleep(1);
-                    // }
-                    // else {
-                    //     circle(rm_map,Point(410,90),18,Scalar(0,0,255),-1);
-                    //     // count_num = 2;
-                    // }	    		
-                // }else{
-                    // drawMap(frame,rm_map,count_num);
-                }
-	        }
-            frame_0=mid_filer.clone();
-            putText(img,"darts",Point(5,790),FONT_HERSHEY_PLAIN,2.0,Scalar(255,255,255),2);            
+            // vector<Moments>mu(contours.size());
+            // for(unsigned i=0;i<contours.size();i++)//计算轮廓面积
+            // {
+            //     mu[i]=moments(contours[i],false);
+            // }
+            // for(int i=0;i<contours.size();i++)//最小外接矩形
+            // {
+	    	//     Rect rect = boundingRect(contours[i]);	//找出轮廓最小外界矩形
+	    	// 	// cout << "矩形框" << rect.width << endl;
+	    	// 	// if(mu[i].m00<2000&&mu[i].m00>125)
+	    	// 	if(mu[i].m00<1300)//范围需要调整
+	    	// 	{
+	    	// 		rectangle(darts_roi, rect, Scalar(0, 255, 0), 3);	//在原图像上画出矩形
+            //         // warning_Lights(rm_map,count_num,410,90);
+            //         // if((sin((count_num*3.1415926)*8/180))>0)//||(sin((count_num*3.1415926*0.5)/180))<-0.5
+            //         // {
+            //         //     circle(rm_map,Point(410,90),18,Scalar(255,0,0),-1);
+            //         //     // sleep(1);
+            //         // }
+            //         // else {
+            //         //     circle(rm_map,Point(410,90),18,Scalar(0,0,255),-1);
+            //         //     // count_num = 2;
+            //         // }	    		
+            //     // }else{
+            //         // drawMap(frame,rm_map,count_num);
+            //     }
+	        // }
+            // frame_0=mid_filer.clone();
+            // putText(img,"darts",Point(5,790),FONT_HERSHEY_PLAIN,2.0,Scalar(255,255,255),2);            
             #if RECORD == 1
                 vw.write(img);
             #endif
@@ -859,14 +908,20 @@ int main ()
             std::array<double, 4> q;
             double timestamp = 0.0;
             std::vector<armor_data> data_armor;
-            // const auto& [img, q, timestamp] = sensor_sub.pop();
+            // // const auto& [img, q, timestamp] = sensor_sub.pop();
             auto detections = model(img1);
             armor_data armor;
             // /* publish detection results */
 
+            //串口发送
+            robo_cmd.is_left.store(1);
+            robo_cmd.is_left.store(180);
+            cout<<"main_is_left:"<<robo_cmd.is_left<<endl;
+            cout<<"main_turn_angle:"<<robo_cmd.turn_angle<<endl;
+
+            // cv::Rect rect_fly(37,260,180,180);
+            // cv::Rect rect_energy(230,310,180,180);
             /* show detections */
-            cv::Rect rect_fly(37,260,180,180);
-            cv::Rect rect_energy(230,310,180,180);
             if(!detections.empty()) {
                 cv::Mat im2show = img.clone();
                 // for (const auto &b: detections) {
@@ -884,6 +939,10 @@ int main ()
                     armor.pts[3]   = detections[i].pts[3];
                     armor.confidence = detections[i].confidence;
                     armor.img_center_dist = getDistance((detections[i].pts[0] + detections[i].pts[3]) * 0.5, cv::Point(img1.cols * 0.5, img1.rows * 0.5 + 100));
+                    // robo_cmd.is_left.store(1);
+                    // robo_cmd.is_left.store(180);
+                    //-------------------------------//
+
                     //  && detections[i].tag_id != 2 
                     // cout<<"point:("<<detections[i].pts[0]<<","<<detections[i].pts[1]<<")"<<endl;
                     // for(int j=0;j<4;j++)
@@ -905,12 +964,12 @@ int main ()
                     
                 }
             }
-            putText(img1,"feipo",Point(5,790),FONT_HERSHEY_PLAIN,2.0,Scalar(255,255,255),2);
+            // putText(img1,"feipo",Point(5,790),FONT_HERSHEY_PLAIN,2.0,Scalar(255,255,255),2);
             // cv::Rect rect_fly(37,260,70,110);
             // cv::Rect rect_energy(112,310,72,150);
             // cvui::printf(frame, 1550, 90, 0.6, 0xff0000, "count_num: %d", count_num);
-            rectangle(img1,rect_fly,Scalar(0,255,0),2);//敌方飞坡区域
-            rectangle(img1,rect_energy,Scalar(0,255,0),2);//敌方大能量机关击打区域
+            // rectangle(img1,rect_fly,Scalar(0,255,0),2);//敌方飞坡区域
+            // rectangle(img1,rect_energy,Scalar(0,255,0),2);//敌方大能量机关击打区域
             
             // drawMap(frame,rm_map,count_num);
             
@@ -983,20 +1042,21 @@ int main ()
             //拼接__________________________//
             // imgs.push_back(img);
             // imgs.push_back(img1);
-            hconcat(img,img1,result);
-            // imshow("0",img);
-            // imshow("1",img1);
-		    cv::imshow(WINDOW_NAME, result);
+
+            // hconcat(img,img1,result);
+            imshow("0",img);
+            imshow("1",img1);
+		    // cv::imshow(WINDOW_NAME, result);
             // std::cout <<"serial_is:" <<serial_.isEmpty() << std::endl;
             // std::cout <<"serial:" <<serial_.returnReceiceColor() << std::endl;
             if(cv::waitKey(1) == 'q') {
-                uart_read_thread.~thread();
+                // uart_read_thread.~thread();
                 break;
             }
         }
 
-        mv_capture_->cameraReleasebuff();        
-        mv_capture_1->cameraReleasebuff();
+        // mv_capture_->cameraReleasebuff();        
+        // mv_capture_1->cameraReleasebuff();
 
     }
 }
