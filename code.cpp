@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-11-18 11:00:18
- * @LastEditTime: 2022-06-26 17:01:53
+ * @LastEditTime: 2022-06-27 16:59:11
  * @LastEditors: JoyceKirkland joyce84739879@163.com
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /code/code.cpp
@@ -49,6 +49,11 @@
 // #include "KCf/camera/mv_video_capture.hpp"
 #include "KCf/devices/new_serial/serial.hpp"
 // #include "KCf/devices/serial/uart_serial.hpp"
+#include <string.h>
+#include <thread>
+#include <chrono>
+#include "cmdline.h"
+#include "livox_sample/lds_lidar.h"
 using namespace std;
 using namespace cv;
 static bool debug = true;
@@ -640,6 +645,31 @@ std::string getCurrentTimeStr()
   sprintf(result, "%s", ch);
   return std::string(result);
 }
+static std::vector<std::string> cmdline_broadcast_code;
+void SetProgramOption(int argc, const char *argv[]) {
+  cmdline::parser cmd;
+  cmd.add<std::string>("code", 'c', "Register device broadcast code", false);
+  cmd.add("log", 'l', "Save the log file");
+  cmd.add("help", 'h', "Show help");
+  cmd.parse_check(argc, const_cast<char **>(argv));
+  if (cmd.exist("code")) {
+    std::string sn_list = cmd.get<std::string>("code");
+    printf("Register broadcast code: %s\n", sn_list.c_str());
+    size_t pos = 0;
+    cmdline_broadcast_code.clear();
+    while ((pos = sn_list.find("&")) != std::string::npos) {
+      cmdline_broadcast_code.push_back(sn_list.substr(0, pos));
+      sn_list.erase(0, pos + 1);
+    }
+    cmdline_broadcast_code.push_back(sn_list);
+  }
+  if (cmd.exist("log")) {
+    printf("Save the log file.\n");
+    SaveLoggerFile();
+  }
+  return;
+}
+
 /*
  *关于串口：1、使用c++11相关的新串口库。2、因为建立了收发信息对应的多线程，因此要去了解原子的坑。
  3、在收信息时可能要写18条store（避免线程互斥的操作，接受之后用于处理数据），所以要用指针遍历结构体，用for。  
@@ -648,7 +678,27 @@ std::string getCurrentTimeStr()
  */
 int main () 
 {
-	// VideoCapture capture("/home/joyce/视频/闸门闪烁/闸门闪烁6.gif");
+    	// VideoCapture capture("/home/joyce/视频/闸门闪烁/闸门闪烁6.gif");
+    //无法与相机共同开启使用
+    // SetProgramOption(argc, argv);
+
+    // LdsLidar& read_lidar = LdsLidar::GetInstance();
+
+    // int ret = read_lidar.InitLdsLidar(cmdline_broadcast_code);
+    // if (!ret) {
+    //   printf("Init lds lidar success!\n");
+    // } else {
+    //   printf("Init lds lidar fail!\n");
+    // }
+
+    // printf("Start discovering device.\n");
+
+    // std::this_thread::sleep_for(std::chrono::seconds(100));
+
+    // read_lidar.DeInitLdsLidar();
+    // printf("Livox lidar demo end!\n");
+
+    //--------------------------------------------------------------------
     RoboInf robo_inf;
     RoboCmd robo_cmd;
     // auto streamer_ptr = std::make_shared<nadjieb::MJPEGStreamer>();

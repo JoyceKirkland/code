@@ -20,7 +20,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 set(OpenCV "/home/joyce/workplace/opencv4.5/opencv-4.5.0/build")
-# set(Livox "/home/joyce/workplace/livox/livox_sdk/Livox-SDK")
+set(Livox "/home/joyce/workplace/livox/livox_sdk/Livox-SDK/build")
 # Find and add opencv as required
 find_package(TensorRT REQUIRED)
 find_package(OpenCV 4  REQUIRED)
@@ -42,7 +42,7 @@ include_directories(${EIGEN3_INCLUDE_DIR})
 include_directories(${TensorRT_INCLUDE_DIRS})
 include_directories(${CERES_INCLUDE_DIRS})
 include_directories(${CUDA_INCLUDE_DIRS})
-# include_directories(${Livox_INCLUDE_DIRS})
+include_directories(${Livox_INCLUDE_DIRS})
 
 # include_directories(${PYTHON_INCLUDE_DIRS})
 # include_directories("./")
@@ -63,6 +63,8 @@ include_directories(/usr/include/opencv4/opencv2)
 
 aux_source_directory(. ALL_SRCS)			# 添加当前目录下所有的源文件
 # name of executable file and path of source file
+# add_executable(code lds_lidar.cpp)
+# add_executable(lds_lidar.cpp)
 add_executable(code ${ALL_SRCS})
 
 set(serial_SRCS
@@ -76,7 +78,6 @@ include_directories(KCf/devices/new_serial)
 add_library(new_serial ${serial_SRCS})
 target_link_libraries(code new_serial)
 
-
 # opencv libraries
 target_link_libraries(code 
 	${OpenCV_LIBS}
@@ -87,6 +88,7 @@ target_link_libraries(code
 	cuda
 	fmt::fmt
 	nvonnxparser
+	livox_sdk_static
 )
 
 include_directories(basic_pnp)
@@ -96,6 +98,10 @@ target_link_libraries(code basic_pnp)
 include_directories(capture)
 add_subdirectory(radar/camera)
 target_link_libraries(code capture)
+
+include_directories(livox)
+add_subdirectory(./livox_sample)
+target_link_libraries(code livox)
 
 # include_directories(kcf)
 # add_subdirectory(KCF/kcf)
