@@ -83,7 +83,7 @@ int VideoCapture::cameraInit(const int _CAMERA_RESOLUTION_COLS,
   // iStatus = CameraInitEx(index_num, -1, -1, &hCamera);
 
   // 相机初始化
-  if(_CAMERA_INDEX==0)
+  if(_CAMERA_INDEX==3)
   {
       // iStatus = CameraInit(tCameraEnumList, -1, -1, &hCamera);//调用单相机时可用
       iStatus = CameraInit(&tCameraEnumList[0], -1, -1, &hCamera);

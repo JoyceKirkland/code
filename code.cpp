@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-11-18 11:00:18
- * @LastEditTime: 2022-06-27 16:59:11
+ * @LastEditTime: 2022-07-28 20:56:56
  * @LastEditors: JoyceKirkland joyce84739879@163.com
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /code/code.cpp
@@ -59,7 +59,10 @@ using namespace cv;
 static bool debug = true;
 
 
-
+enum Color {
+  BLUE,
+  RED,
+};
 struct Detection_pack{
     /*
      * 打包数据结构，将识别结果、对应的图像、陀螺仪和时间戳对应
@@ -469,35 +472,36 @@ struct HP_information
   int B_Base_HP = 0;
 }HP_info;
 
-void output_HP()
-{
-    HP_info.R_Hero_HP=out_robo_inf.R_Hero_HP.load();
-    HP_info.R_Engineer_HP=out_robo_inf.R_Engineer_HP.load();
-    HP_info.R_Infantry3_HP=out_robo_inf.R_Infantry3_HP.load();
-    HP_info.R_Infantry4_HP=out_robo_inf.R_Infantry4_HP.load();
-    HP_info.R_Infantry5_HP=out_robo_inf.R_Infantry5_HP.load();
-    HP_info.R_Sentry_HP=out_robo_inf.R_Sentry_HP.load();
-    HP_info.R_Outpost_HP=out_robo_inf.R_Outpost_HP.load();
-    HP_info.R_Base_HP=out_robo_inf.R_Base_HP.load();
+// void output_HP()
+// {
+//     HP_info.R_Hero_HP=out_robo_inf.R_Hero_HP.load();
+//     HP_info.R_Engineer_HP=out_robo_inf.R_Engineer_HP.load();
+//     HP_info.R_Infantry3_HP=out_robo_inf.R_Infantry3_HP.load();
+//     HP_info.R_Infantry4_HP=out_robo_inf.R_Infantry4_HP.load();
+//     HP_info.R_Infantry5_HP=out_robo_inf.R_Infantry5_HP.load();
+//     HP_info.R_Sentry_HP=out_robo_inf.R_Sentry_HP.load();
+//     HP_info.R_Outpost_HP=out_robo_inf.R_Outpost_HP.load();
+//     HP_info.R_Base_HP=out_robo_inf.R_Base_HP.load();
 
-    HP_info.B_Hero_HP=out_robo_inf.B_Hero_HP.load();
-    HP_info.B_Engineer_HP=out_robo_inf.B_Engineer_HP.load();
-    HP_info.B_Infantry3_HP=out_robo_inf.B_Infantry3_HP.load();
-    HP_info.B_Infantry4_HP=out_robo_inf.B_Infantry4_HP.load();
-    HP_info.B_Infantry5_HP=out_robo_inf.B_Infantry5_HP.load();
-    HP_info.B_Sentry_HP=out_robo_inf.B_Sentry_HP.load();
-    HP_info.B_Outpost_HP=out_robo_inf.B_Outpost_HP.load();
-    HP_info.B_Base_HP=out_robo_inf.B_Base_HP.load();
+//     HP_info.B_Hero_HP=out_robo_inf.B_Hero_HP.load();
+//     HP_info.B_Engineer_HP=out_robo_inf.B_Engineer_HP.load();
+//     HP_info.B_Infantry3_HP=out_robo_inf.B_Infantry3_HP.load();
+//     HP_info.B_Infantry4_HP=out_robo_inf.B_Infantry4_HP.load();
+//     HP_info.B_Infantry5_HP=out_robo_inf.B_Infantry5_HP.load();
+//     HP_info.B_Sentry_HP=out_robo_inf.B_Sentry_HP.load();
+//     HP_info.B_Outpost_HP=out_robo_inf.B_Outpost_HP.load();
+//     HP_info.B_Base_HP=out_robo_inf.B_Base_HP.load();
 
-}
+// }
 
 void uartWriteThread(const std::shared_ptr<RoboSerial> &serial,
                      RoboCmd &robo_cmd) {
   while (true) try {
       if(serial->isOpen()) {
         serial->WriteInfo(robo_cmd);
-        cout<<"is_left:"<<robo_cmd.is_left<<endl;
-        cout<<"turn_angle:"<<robo_cmd.turn_angle<<endl;
+        
+        // cout<<"is_left:"<<robo_cmd.is_left<<endl;
+        // cout<<"turn_angle:"<<robo_cmd.turn_angle<<endl;
 
       } else {
         serial->open();
@@ -524,29 +528,30 @@ void uartReadThread(const std::shared_ptr<RoboSerial> &serial,
     //   cout<<"??????????/"<<endl;
       if(serial->isOpen()) {
         serial->ReceiveInfo(robo_inf);
+        // cout<<"readsth"<<endl;
     // std::cout<<"R_Hero_HP_robo:"<<robo_inf.R_Hero_HP<<std::endl;
-    // out_robo_inf.R_Hero_HP.store(robo_inf.R_Hero_HP);
+    out_robo_inf.my_color.store(robo_inf.my_color);
     // std::cout<<"R_Hero_HP_output:"<<out_robo_inf.R_Hero_HP<<std::endl;
     //   atomic<uint16_t> out_robo_inf.R_Hero_HP(robo_inf.R_Hero_HP.load());
-      out_robo_inf.R_Hero_HP.store(robo_inf.R_Hero_HP);
-      out_robo_inf.R_Engineer_HP.store(robo_inf.R_Engineer_HP);
-      out_robo_inf.R_Infantry3_HP.store(robo_inf.R_Infantry3_HP);
-      out_robo_inf.R_Infantry4_HP.store(robo_inf.R_Infantry4_HP);
-      out_robo_inf.R_Infantry5_HP.store(robo_inf.R_Infantry5_HP);
-      out_robo_inf.R_Sentry_HP.store(robo_inf.R_Sentry_HP);
-      out_robo_inf.R_Outpost_HP.store(robo_inf.R_Outpost_HP);
-      out_robo_inf.R_Base_HP.store(robo_inf.R_Base_HP);
-          //sdfas
-      out_robo_inf.B_Hero_HP.store(robo_inf.B_Hero_HP);
-      out_robo_inf.B_Engineer_HP.store(robo_inf.B_Engineer_HP);
-      out_robo_inf.B_Infantry3_HP.store(robo_inf.B_Infantry3_HP);
-      out_robo_inf.B_Infantry4_HP.store(robo_inf.B_Infantry4_HP);
-      out_robo_inf.B_Infantry5_HP.store(robo_inf.B_Infantry5_HP);
-      out_robo_inf.B_Sentry_HP.store(robo_inf.B_Sentry_HP);
-      out_robo_inf.B_Outpost_HP.store(robo_inf.B_Outpost_HP);
-      out_robo_inf.B_Base_HP.store(robo_inf.B_Base_HP);
+    //   out_robo_inf.R_Hero_HP.store(robo_inf.R_Hero_HP);
+    //   out_robo_inf.R_Engineer_HP.store(robo_inf.R_Engineer_HP);
+    //   out_robo_inf.R_Infantry3_HP.store(robo_inf.R_Infantry3_HP);
+    //   out_robo_inf.R_Infantry4_HP.store(robo_inf.R_Infantry4_HP);
+    //   out_robo_inf.R_Infantry5_HP.store(robo_inf.R_Infantry5_HP);
+    //   out_robo_inf.R_Sentry_HP.store(robo_inf.R_Sentry_HP);
+    //   out_robo_inf.R_Outpost_HP.store(robo_inf.R_Outpost_HP);
+    //   out_robo_inf.R_Base_HP.store(robo_inf.R_Base_HP);
+    //       //sdfas
+    //   out_robo_inf.B_Hero_HP.store(robo_inf.B_Hero_HP);
+    //   out_robo_inf.B_Engineer_HP.store(robo_inf.B_Engineer_HP);
+    //   out_robo_inf.B_Infantry3_HP.store(robo_inf.B_Infantry3_HP);
+    //   out_robo_inf.B_Infantry4_HP.store(robo_inf.B_Infantry4_HP);
+    //   out_robo_inf.B_Infantry5_HP.store(robo_inf.B_Infantry5_HP);
+    //   out_robo_inf.B_Sentry_HP.store(robo_inf.B_Sentry_HP);
+    //   out_robo_inf.B_Outpost_HP.store(robo_inf.B_Outpost_HP);
+    //   out_robo_inf.B_Base_HP.store(robo_inf.B_Base_HP);
       
-    // std::cout<<"R_Engineer_HP:"<<out_robo_inf.R_Engineer_HP<<std::endl;
+    std::cout<<"out_robo_inf_color:"<<out_robo_inf.my_color<<std::endl;
     // std::cout<<"R_Infantry3_HP:"<<out_robo_inf.R_Infantry3_HP<<std::endl;
     // std::cout<<"R_Infantry4_HP:"<<out_robo_inf.R_Infantry4_HP<<std::endl;
     // std::cout<<"R_Infantry5_HP:"<<out_robo_inf.R_Infantry5_HP<<std::endl;
@@ -645,30 +650,30 @@ std::string getCurrentTimeStr()
   sprintf(result, "%s", ch);
   return std::string(result);
 }
-static std::vector<std::string> cmdline_broadcast_code;
-void SetProgramOption(int argc, const char *argv[]) {
-  cmdline::parser cmd;
-  cmd.add<std::string>("code", 'c', "Register device broadcast code", false);
-  cmd.add("log", 'l', "Save the log file");
-  cmd.add("help", 'h', "Show help");
-  cmd.parse_check(argc, const_cast<char **>(argv));
-  if (cmd.exist("code")) {
-    std::string sn_list = cmd.get<std::string>("code");
-    printf("Register broadcast code: %s\n", sn_list.c_str());
-    size_t pos = 0;
-    cmdline_broadcast_code.clear();
-    while ((pos = sn_list.find("&")) != std::string::npos) {
-      cmdline_broadcast_code.push_back(sn_list.substr(0, pos));
-      sn_list.erase(0, pos + 1);
-    }
-    cmdline_broadcast_code.push_back(sn_list);
-  }
-  if (cmd.exist("log")) {
-    printf("Save the log file.\n");
-    SaveLoggerFile();
-  }
-  return;
-}
+// static std::vector<std::string> cmdline_broadcast_code;
+// void SetProgramOption(int argc, const char *argv[]) {
+//   cmdline::parser cmd;
+//   cmd.add<std::string>("code", 'c', "Register device broadcast code", false);
+//   cmd.add("log", 'l', "Save the log file");
+//   cmd.add("help", 'h', "Show help");
+//   cmd.parse_check(argc, const_cast<char **>(argv));
+//   if (cmd.exist("code")) {
+//     std::string sn_list = cmd.get<std::string>("code");
+//     printf("Register broadcast code: %s\n", sn_list.c_str());
+//     size_t pos = 0;
+//     cmdline_broadcast_code.clear();
+//     while ((pos = sn_list.find("&")) != std::string::npos) {
+//       cmdline_broadcast_code.push_back(sn_list.substr(0, pos));
+//       sn_list.erase(0, pos + 1);
+//     }
+//     cmdline_broadcast_code.push_back(sn_list);
+//   }
+//   if (cmd.exist("log")) {
+//     printf("Save the log file.\n");
+//     SaveLoggerFile();
+//   }
+//   return;
+// }
 
 /*
  *关于串口：1、使用c++11相关的新串口库。2、因为建立了收发信息对应的多线程，因此要去了解原子的坑。
@@ -703,17 +708,29 @@ int main ()
     RoboCmd robo_cmd;
     // auto streamer_ptr = std::make_shared<nadjieb::MJPEGStreamer>();
     // streamer_ptr->start(8080);
+    robo_cmd.is_left=2;
+    // robo_cmd.turn_angle=2.0;
     auto serial = std::make_shared<RoboSerial>("/dev/ttyUSB0", 115200);
 
-    std::thread uart_read_thread(uartReadThread, serial, std::ref(robo_inf));
-    uart_read_thread.detach();
+    // std::thread uart_read_thread(uartReadThread, serial, std::ref(robo_inf));
+    // uart_read_thread.detach();
 
-    std::thread uart_write_thread(uartWriteThread, serial, std::ref(robo_cmd));
-    uart_write_thread.detach();
+    // std::thread uart_write_thread(uartWriteThread, serial, std::ref(robo_cmd));
+    // uart_write_thread.detach();
 
 
-    // cout<<"??????????????????????????????/"<<endl;
-
+    cout<<"??????????????????????????????"<<endl;
+    std::cout<<"main_my_color:"<<robo_inf.my_color<<std::endl;
+    if(robo_inf.my_color==0)
+    {
+        out_robo_inf.my_color=RED;
+        cout<<"zeor"<<endl;
+    }else
+    {
+        // out_robo_inf.my_color=BLUE;
+        cout<<"one"<<endl;
+    }
+    
     // std::cout<<"R_Hero_HP:"<<robo_inf.R_Hero_HP<<std::endl;
     // std::cout<<"R_Engineer_HP:"<<robo_inf.R_Engineer_HP<<std::endl;
     // std::cout<<"R_Infantry3_HP:"<<robo_inf.R_Infantry3_HP<<std::endl;
@@ -761,13 +778,13 @@ int main ()
     basic_pnp::PnP pnp_ = basic_pnp::PnP("/home/joyce/workplace/rm/2022/KCf/configs/camera/mv_camera_config_555.xml", 
                                          "/home/joyce/workplace/rm/2022/KCf/configs/angle_solve/basic_pnp_config.xml");
 
-    // mindvision::VideoCapture* mv_capture_ = new mindvision::VideoCapture(
-    // mindvision::CameraParam(0, mindvision::RESOLUTION_1280_X_800, mindvision::EXPOSURE_20000),0);
-    // cv::VideoCapture cap_ = cv::VideoCapture(0);
+    mindvision::VideoCapture* mv_capture_ = new mindvision::VideoCapture(
+    mindvision::CameraParam(0, mindvision::RESOLUTION_1280_X_800, mindvision::EXPOSURE_20000),3);
+    cv::VideoCapture cap_ = cv::VideoCapture(3);
 
-    // mindvision::VideoCapture* mv_capture_1 = new mindvision::VideoCapture(
-    // mindvision::CameraParam(0, mindvision::RESOLUTION_1280_X_800, mindvision::EXPOSURE_20000),1);
-    // cv::VideoCapture cap_1 = cv::VideoCapture(1);
+    mindvision::VideoCapture* mv_capture_1 = new mindvision::VideoCapture(
+    mindvision::CameraParam(0, mindvision::RESOLUTION_1280_X_800, mindvision::EXPOSURE_20000),4);
+    cv::VideoCapture cap_1 = cv::VideoCapture(4);
 
     VideoCapture cap0(0);
     VideoCapture cap1(2);
@@ -802,8 +819,9 @@ int main ()
     // auto t1 = system_clock::now();
     // int cnt_useless = -1;
 	cv::Mat img;//装甲板
-    cv::Mat img1;//飞镖
-    cv::Mat darts_roi;
+    cv::Mat img1;//飞镖.
+	cv::Mat img2;//装甲板
+    cv::Mat img3;//飞镖.
     // cv::Mat frame = cv::Mat(900, 1500, CV_8UC3);
 
     const cv::Scalar colors[4] = {{255, 0, 0}, {0, 0, 255}, {0, 255, 0}, {255, 255, 255}};
@@ -824,17 +842,18 @@ int main ()
     // cvui::image(frame, 20, 20, rm_map_bule);
             // cv::imshow("map", rm_map_bule);
 
-    cv::namedWindow(WINDOW_NAME,WINDOW_NORMAL);
+    // cv::namedWindow(WINDOW_NAME,WINDOW_NORMAL);
     
-	cvui::init(WINDOW_NAME);
+	// cvui::init("WINDOW_NAME");
 
     while (true) 
     {
 
 		// 记录起始的时钟周期数
         double time = (double)getTickCount();
-        cap0>>img;
-        cap1>>img1;
+        cap0>>img2;
+        // cout<<"cap0:"<<cap0.isOpened()<<endl;
+        cap1>>img3;
         // frame = cv::Scalar(49, 52, 49);
         // armor(mv_capture_,img,cap_,
         //         serial_,colors,
@@ -846,25 +865,25 @@ int main ()
         //         count_num,mid_filer,background,frame_0,foreground,
         //          foreground_BW, element);
     
-        // if (
-        //     mv_capture_->isindustryimgInput()
-        // &&
-        // mv_capture_1->isindustryimgInput()
-        // ) 
-        // {
-        //     img = mv_capture_->image();
-        //     img1=mv_capture_1->image();
+        if (
+            mv_capture_->isindustryimgInput()
+        &&
+        mv_capture_1->isindustryimgInput()
+        ) 
+        {
+            img = mv_capture_->image();
+            img1=mv_capture_1->image();
 
-        // } else {
-        //     cap_.read(img);
-        //     cap_1.read(img1);
-        // }
-        // if (
-        //     (!img1.empty()
-        //     )
-        // ||
-        // (!img.empty())
-        // ) 
+        } else {
+            cap_.read(img);
+            cap_1.read(img1);
+        }
+        if (
+            (!img1.empty()
+            )
+        ||
+        (!img.empty())
+        )  
         {
             //_______________地图阵营选择，默认我方颜色在下方__________________//
             // if(change_map==1)//地图阵营切换
@@ -955,65 +974,65 @@ int main ()
             #endif
             // imshow("0",img);
             //--------------------------------------------
-            std::array<double, 4> q;
-            double timestamp = 0.0;
-            std::vector<armor_data> data_armor;
-            // // const auto& [img, q, timestamp] = sensor_sub.pop();
-            auto detections = model(img1);
-            armor_data armor;
-            // /* publish detection results */
+            // std::array<double, 4> q;
+            // double timestamp = 0.0;
+            // std::vector<armor_data> data_armor;
+            // // // const auto& [img, q, timestamp] = sensor_sub.pop();
+            // auto detections = model(img1);
+            // armor_data armor;
+            // // /* publish detection results */
 
-            //串口发送
-            robo_cmd.is_left.store(1);
-            robo_cmd.is_left.store(180);
-            cout<<"main_is_left:"<<robo_cmd.is_left<<endl;
-            cout<<"main_turn_angle:"<<robo_cmd.turn_angle<<endl;
+            // //串口发送
+            // // robo_cmd.is_left.store(1);
+            // // robo_cmd.is_left.store(2.0);
+            // // cout<<"main_is_left:"<<robo_cmd.is_left<<endl;
+            // // cout<<"main_turn_angle:"<<robo_cmd.turn_angle<<endl;
 
-            // cv::Rect rect_fly(37,260,180,180);
-            // cv::Rect rect_energy(230,310,180,180);
-            /* show detections */
-            if(!detections.empty()) {
-                cv::Mat im2show = img.clone();
-                // for (const auto &b: detections) {
-                for (int i = 0; i < detections.size(); i++) {
-                    cv::line(img1, detections[i].pts[0], detections[i].pts[1], colors[1], 6);
-                    cv::line(img1, detections[i].pts[1], detections[i].pts[2], colors[1], 6);
-                    cv::line(img1, detections[i].pts[2], detections[i].pts[3], colors[1], 6);
-                    cv::line(img1, detections[i].pts[3], detections[i].pts[0], colors[1], 6);
-                    cv::putText(img, std::to_string(detections[i].tag_id), detections[i].pts[0], cv::FONT_HERSHEY_SIMPLEX, 1, colors[detections[i].color_id]);
-                    armor.color_id = detections[i].color_id;
-                    armor.tag_id   = detections[i].tag_id;
-                    armor.pts[0]   = detections[i].pts[0];
-                    armor.pts[1]   = detections[i].pts[1];
-                    armor.pts[2]   = detections[i].pts[2];
-                    armor.pts[3]   = detections[i].pts[3];
-                    armor.confidence = detections[i].confidence;
-                    armor.img_center_dist = getDistance((detections[i].pts[0] + detections[i].pts[3]) * 0.5, cv::Point(img1.cols * 0.5, img1.rows * 0.5 + 100));
-                    // robo_cmd.is_left.store(1);
-                    // robo_cmd.is_left.store(180);
-                    //-------------------------------//
+            // // cv::Rect rect_fly(37,260,180,180);
+            // // cv::Rect rect_energy(230,310,180,180);
+            // /* show detections */
+            // if(!detections.empty()) {
+            //     cv::Mat im2show = img.clone();
+            //     // for (const auto &b: detections) {
+            //     for (int i = 0; i < detections.size(); i++) {
+            //         cv::line(img1, detections[i].pts[0], detections[i].pts[1], colors[1], 6);
+            //         cv::line(img1, detections[i].pts[1], detections[i].pts[2], colors[1], 6);
+            //         cv::line(img1, detections[i].pts[2], detections[i].pts[3], colors[1], 6);
+            //         cv::line(img1, detections[i].pts[3], detections[i].pts[0], colors[1], 6);
+            //         cv::putText(img1, std::to_string(detections[i].tag_id), detections[i].pts[0], cv::FONT_HERSHEY_SIMPLEX, 1, colors[detections[i].color_id]);
+            //         armor.color_id = detections[i].color_id;
+            //         armor.tag_id   = detections[i].tag_id;
+            //         armor.pts[0]   = detections[i].pts[0];
+            //         armor.pts[1]   = detections[i].pts[1];
+            //         armor.pts[2]   = detections[i].pts[2];
+            //         armor.pts[3]   = detections[i].pts[3];
+            //         armor.confidence = detections[i].confidence;
+            //         armor.img_center_dist = getDistance((detections[i].pts[0] + detections[i].pts[3]) * 0.5, cv::Point(img1.cols * 0.5, img1.rows * 0.5 + 100));
+            //         // robo_cmd.is_left.store(1);
+            //         // robo_cmd.is_left.store(180);
+            //         //-------------------------------//
 
-                    //  && detections[i].tag_id != 2 
-                    // cout<<"point:("<<detections[i].pts[0]<<","<<detections[i].pts[1]<<")"<<endl;
-                    // for(int j=0;j<4;j++)
-                    // {
-                    //     if(fly_or_engery(detections[i].pts[j].x,detections[i].pts[j].y,rect_fly))//装甲板是否出现在飞坡区域
-                    //     {
-                    //         warning_Lights(rm_map,count_num,92,480);
-                    //     }
-                    //     if(fly_or_engery(detections[i].pts[j].x,detections[i].pts[j].y,rect_energy))//装甲板是否出现在能量机关击打区域
-                    //     {
-                    //         warning_Lights(rm_map,count_num,150,340);
-                    //     }
+            //         //  && detections[i].tag_id != 2 
+            //         // cout<<"point:("<<detections[i].pts[0]<<","<<detections[i].pts[1]<<")"<<endl;
+            //         // for(int j=0;j<4;j++)
+            //         // {
+            //         //     if(fly_or_engery(detections[i].pts[j].x,detections[i].pts[j].y,rect_fly))//装甲板是否出现在飞坡区域
+            //         //     {
+            //         //         warning_Lights(rm_map,count_num,92,480);
+            //         //     }
+            //         //     if(fly_or_engery(detections[i].pts[j].x,detections[i].pts[j].y,rect_energy))//装甲板是否出现在能量机关击打区域
+            //         //     {
+            //         //         warning_Lights(rm_map,count_num,150,340);
+            //         //     }
 
-                    // }
-                    // if (serial_.returnReceiceColor() != detections[i].color_id && detections[i].confidence > 0.5 ) 
-                    // {
-                    //     data_armor.push_back(armor);
-                    // }
+            //         // }
+            //         // if (serial_.returnReceiceColor() != detections[i].color_id && detections[i].confidence > 0.5 ) 
+            //         // {
+            //         //     data_armor.push_back(armor);
+            //         // }
                     
-                }
-            }
+            //     }
+            // }
             // putText(img1,"feipo",Point(5,790),FONT_HERSHEY_PLAIN,2.0,Scalar(255,255,255),2);
             // cv::Rect rect_fly(37,260,70,110);
             // cv::Rect rect_energy(112,310,72,150);
@@ -1080,7 +1099,7 @@ int main ()
             // cvui::printf(frame, 695, 930, 0.9, 0xFFFFFF, "R3:");
             // cvui::printf(frame, 695, 960, 0.9, 0xFFFFFF, "R4:");
             // cvui::printf(frame, 695, 990, 0.9, 0xFFFFFF, "R5:");
-            // cvui::printf(frame, 695, 1020, 0.9, 0xFFFFFF, "R6:");
+            
             // cvui::printf(frame, 695, 1050, 0.9, 0xFFFFFF, "--------");
             // cvui::printf(frame, 695, 1080, 0.9, 0xFFFFFF, "R7:");
             // cvui::printf(frame, 695, 1110, 0.9, 0xFFFFFF, "RO:");
@@ -1093,10 +1112,13 @@ int main ()
             // imgs.push_back(img);
             // imgs.push_back(img1);
 
-            // hconcat(img,img1,result);
-            imshow("0",img);
-            imshow("1",img1);
-		    // cv::imshow(WINDOW_NAME, result);
+            hconcat(img,img1,result);
+            imshow("3",img3);
+            imshow("2",img2);
+            // imshow("1",img1);
+            // imshow("0",img);
+
+		    cv::imshow(WINDOW_NAME, result);
             // std::cout <<"serial_is:" <<serial_.isEmpty() << std::endl;
             // std::cout <<"serial:" <<serial_.returnReceiceColor() << std::endl;
             if(cv::waitKey(1) == 'q') {
@@ -1105,8 +1127,8 @@ int main ()
             }
         }
 
-        // mv_capture_->cameraReleasebuff();        
-        // mv_capture_1->cameraReleasebuff();
+        mv_capture_->cameraReleasebuff();        
+        mv_capture_1->cameraReleasebuff();
 
     }
 }
