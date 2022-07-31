@@ -53,7 +53,7 @@ class RoboSerial : public serial::Serial {
       }
           // std::cout<<"temp_:"<<(char)temp<<std::endl;
 
-    std::cout<<"temp:"<<sizeof(temp)<<std::endl;
+    // std::cout<<"temp:"<<sizeof(temp)<<std::endl;
 
     this->read((uint8_t *)&robo_inf_uart_temp, sizeof(robo_inf_uart_temp));
     

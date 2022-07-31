@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-11-18 11:00:18
- * @LastEditTime: 2022-07-28 20:56:56
+ * @LastEditTime: 2022-07-31 19:39:02
  * @LastEditors: JoyceKirkland joyce84739879@163.com
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /code/code.cpp
@@ -551,7 +551,7 @@ void uartReadThread(const std::shared_ptr<RoboSerial> &serial,
     //   out_robo_inf.B_Outpost_HP.store(robo_inf.B_Outpost_HP);
     //   out_robo_inf.B_Base_HP.store(robo_inf.B_Base_HP);
       
-    std::cout<<"out_robo_inf_color:"<<out_robo_inf.my_color<<std::endl;
+    // std::cout<<"out_robo_inf_color:"<<out_robo_inf.my_color<<std::endl;
     // std::cout<<"R_Infantry3_HP:"<<out_robo_inf.R_Infantry3_HP<<std::endl;
     // std::cout<<"R_Infantry4_HP:"<<out_robo_inf.R_Infantry4_HP<<std::endl;
     // std::cout<<"R_Infantry5_HP:"<<out_robo_inf.R_Infantry5_HP<<std::endl;
@@ -674,6 +674,77 @@ std::string getCurrentTimeStr()
 //   }
 //   return;
 // }
+TRTModule model("/home/joyce/workplace/rm/2022/code/KCf/asset/model-opt-3.onnx");
+//color_id:0-blue,1-red
+void armor(cv::Mat frame,RoboCmd &robo_cmd,const cv::Scalar colors[4],int INDEX,char my_color)
+{
+    std::array<double, 4> q;
+            double timestamp = 0.0;
+            std::vector<armor_data> data_armor;
+            // // const auto& [img, q, timestamp] = sensor_sub.pop();
+            auto detections = model(frame);
+            armor_data armor;
+            // /* publish detection results */
+            // int new_color=
+            //串口发送
+            // robo_cmd.is_left.store(1);
+            // robo_cmd.is_left.store(2.0);
+            // cout<<"my_color_armor:"<<my_color-'0'<<endl;
+            // cout<<"main_turn_angle:"<<robo_cmd.turn_angle<<endl;
+
+            // cv::Rect rect_fly(37,260,180,180);
+            // cv::Rect rect_energy(230,310,180,180);
+            /* show detections */
+            if(!detections.empty()) {
+                // cv::Mat im2show = img.clone();
+                // for (const auto &b: detections) {
+                for (int i = 0; i < detections.size(); i++) {
+                    //从串口收到的我方颜色：1-blue,0-red
+                    //模型返回的识别颜色：1-red,0-blue
+                    //所以要模型返回的颜色变量值==从串口收到的我方变量值才能做到“我是蓝色，只识别红色不识别蓝色”
+                    if(detections[i].color_id==(my_color-'0'))
+
+                    {
+                        cv::line(frame, detections[i].pts[0], detections[i].pts[1], colors[1], 6);
+                        cv::line(frame, detections[i].pts[1], detections[i].pts[2], colors[1], 6);
+                        cv::line(frame, detections[i].pts[2], detections[i].pts[3], colors[1], 6);
+                        cv::line(frame, detections[i].pts[3], detections[i].pts[0], colors[1], 6);
+                        cv::putText(frame, std::to_string(detections[i].tag_id), detections[i].pts[0], cv::FONT_HERSHEY_SIMPLEX, 1, colors[detections[i].color_id]);
+                    }
+                    armor.color_id = detections[i].color_id;
+                    armor.tag_id   = detections[i].tag_id;
+                    armor.pts[0]   = detections[i].pts[0];
+                    armor.pts[1]   = detections[i].pts[1];
+                    armor.pts[2]   = detections[i].pts[2];
+                    armor.pts[3]   = detections[i].pts[3];
+                    armor.confidence = detections[i].confidence;
+                    armor.img_center_dist = getDistance((detections[i].pts[0] + detections[i].pts[3]) * 0.5, cv::Point(frame.cols * 0.5, frame.rows * 0.5 + 100));
+                    
+                    // robo_cmd.is_left.store(180);
+                    //-------------------------------//
+                    
+                    //  && detections[i].tag_id != 2 
+                    // cout<<"point:("<<detections[i].pts[0]<<","<<detections[i].pts[1]<<")"<<endl;
+                    cout<<"color[id]:"<<detections[i].color_id<<endl;
+                    for(int j=0;j<4;j++)
+                    {
+                        if(INDEX==1)
+                        {
+                            robo_cmd.is_left.store(1);
+                        }else{
+                            robo_cmd.is_left.store(2);
+                        }
+                        // std::thread uart_write_thread(uartWriteThread, serial, std::ref(robo_cmd));
+                        // uart_write_thread.detach();
+                    
+                    // if (serial_.returnReceiceColor() != detections[i].color_id && detections[i].confidence > 0.5 ) 
+                    // {
+                    //     data_armor.push_back(armor);
+                    // }
+                    }
+                }
+            }
+}
 
 /*
  *关于串口：1、使用c++11相关的新串口库。2、因为建立了收发信息对应的多线程，因此要去了解原子的坑。
@@ -706,30 +777,31 @@ int main ()
     //--------------------------------------------------------------------
     RoboInf robo_inf;
     RoboCmd robo_cmd;
+    int mycolor;
     // auto streamer_ptr = std::make_shared<nadjieb::MJPEGStreamer>();
     // streamer_ptr->start(8080);
-    robo_cmd.is_left=2;
+    // robo_cmd.is_left=2;
     // robo_cmd.turn_angle=2.0;
     auto serial = std::make_shared<RoboSerial>("/dev/ttyUSB0", 115200);
 
-    // std::thread uart_read_thread(uartReadThread, serial, std::ref(robo_inf));
-    // uart_read_thread.detach();
+    std::thread uart_read_thread(uartReadThread, serial, std::ref(robo_inf));
+    uart_read_thread.detach();
 
-    // std::thread uart_write_thread(uartWriteThread, serial, std::ref(robo_cmd));
-    // uart_write_thread.detach();
+    std::thread uart_write_thread(uartWriteThread, serial, std::ref(robo_cmd));
+    uart_write_thread.detach();
 
 
-    cout<<"??????????????????????????????"<<endl;
-    std::cout<<"main_my_color:"<<robo_inf.my_color<<std::endl;
-    if(robo_inf.my_color==0)
-    {
-        out_robo_inf.my_color=RED;
-        cout<<"zeor"<<endl;
-    }else
-    {
-        // out_robo_inf.my_color=BLUE;
-        cout<<"one"<<endl;
-    }
+    // cout<<"??????????????????????????????"<<endl;
+    // std::cout<<"main_my_color:"<<out_robo_inf.my_color.load()<<std::endl;
+    // if(out_robo_inf.my_color==0)
+    // {
+    //     out_robo_inf.my_color=RED;
+    //     cout<<"zeor"<<endl;
+    // }else
+    // {
+    //     // out_robo_inf.my_color=BLUE;
+    //     cout<<"one"<<endl;
+    // }
     
     // std::cout<<"R_Hero_HP:"<<robo_inf.R_Hero_HP<<std::endl;
     // std::cout<<"R_Engineer_HP:"<<robo_inf.R_Engineer_HP<<std::endl;
@@ -739,15 +811,6 @@ int main ()
     // std::cout<<"R_Infantry5_HP:"<<robo_inf.R_Sentry_HP<<std::endl;
     // std::cout<<"R_Outpost_HP:"<<robo_inf.R_Outpost_HP<<std::endl;
     // std::cout<<"R_Base_HP:"<<robo_inf.R_Base_HP<<std::endl;
-
-    // std::cout<<"B_Hero_HP:"<<robo_inf.B_Hero_HP<<std::endl;
-    // std::cout<<"B_Engineer_HP:"<<robo_inf.B_Engineer_HP<<std::endl;
-    // std::cout<<"B_Infantry3_HP:"<<robo_inf.B_Infantry3_HP<<std::endl;
-    // std::cout<<"B_Infantry4_HP:"<<robo_inf.B_Infantry4_HP<<std::endl;
-    // std::cout<<"B_Infantry5_HP:"<<robo_inf.B_Infantry5_HP<<std::endl;
-    // std::cout<<"B_Sentry_HP:"<<robo_inf.B_Sentry_HP<<std::endl;
-    // std::cout<<"B_Outpost_HP:"<<robo_inf.B_Outpost_HP<<std::endl;
-    // std::cout<<"B_Base_HP:"<<robo_inf.B_Base_HP<<std::endl;
 
     //————————————————————————————————————————————————————
     int change=1;
@@ -771,7 +834,7 @@ int main ()
     vw1.open(video_file+"radar-"+record_date_1+".avi",VideoWriter::fourcc('M', 'J', 'P', 'G'),30,Size(1280,800));
     #endif
     //——————————————————————————————————
-    TRTModule model("/home/joyce/workplace/rm/2022/code/KCf/asset/model-opt-3.onnx");
+    // TRTModule model("/home/joyce/workplace/rm/2022/code/KCf/asset/model-opt-3.onnx");
 
     // uart::SerialPort serial_ = uart::SerialPort("/home/joyce/workplace/rm/2022/KCf/configs/serial/uart_serial_config.xml");
 
@@ -974,6 +1037,15 @@ int main ()
             #endif
             // imshow("0",img);
             //--------------------------------------------
+            //串口获取己方颜色
+            // mycolor=out_robo_inf.my_color.load();
+            // std::cout<<"main_my_color:"<<mycolor<<std::endl;
+            armor(img3,std::ref(robo_cmd),colors,1,out_robo_inf.my_color.load());
+            armor(img2,std::ref(robo_cmd),colors,2,out_robo_inf.my_color.load());
+            //debug-自设定颜色
+            // armor(img3,std::ref(robo_cmd),colors,1,1);
+            // armor(img2,std::ref(robo_cmd),colors,2,1);
+
             // std::array<double, 4> q;
             // double timestamp = 0.0;
             // std::vector<armor_data> data_armor;
@@ -1008,29 +1080,23 @@ int main ()
             //         armor.pts[3]   = detections[i].pts[3];
             //         armor.confidence = detections[i].confidence;
             //         armor.img_center_dist = getDistance((detections[i].pts[0] + detections[i].pts[3]) * 0.5, cv::Point(img1.cols * 0.5, img1.rows * 0.5 + 100));
-            //         // robo_cmd.is_left.store(1);
+                    
             //         // robo_cmd.is_left.store(180);
             //         //-------------------------------//
-
+                    
             //         //  && detections[i].tag_id != 2 
             //         // cout<<"point:("<<detections[i].pts[0]<<","<<detections[i].pts[1]<<")"<<endl;
-            //         // for(int j=0;j<4;j++)
-            //         // {
-            //         //     if(fly_or_engery(detections[i].pts[j].x,detections[i].pts[j].y,rect_fly))//装甲板是否出现在飞坡区域
-            //         //     {
-            //         //         warning_Lights(rm_map,count_num,92,480);
-            //         //     }
-            //         //     if(fly_or_engery(detections[i].pts[j].x,detections[i].pts[j].y,rect_energy))//装甲板是否出现在能量机关击打区域
-            //         //     {
-            //         //         warning_Lights(rm_map,count_num,150,340);
-            //         //     }
-
-            //         // }
+            //         for(int j=0;j<4;j++)
+            //         {
+            //             robo_cmd.is_left.store(1);
+            //             std::thread uart_write_thread(uartWriteThread, serial, std::ref(robo_cmd));
+            //             uart_write_thread.detach();
+                    
             //         // if (serial_.returnReceiceColor() != detections[i].color_id && detections[i].confidence > 0.5 ) 
             //         // {
             //         //     data_armor.push_back(armor);
             //         // }
-                    
+            //         }
             //     }
             // }
             // putText(img1,"feipo",Point(5,790),FONT_HERSHEY_PLAIN,2.0,Scalar(255,255,255),2);
